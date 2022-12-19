@@ -9,6 +9,9 @@ Imports System.ComponentModel
 Imports EposCmd.Net
 Imports EposCmd.Net.DeviceCmdSet.Operation
 
+''' <summary>
+''' GUI form class for accepting user input
+''' </summary>
 Public Class Form1
 
     Dim connector As DeviceManager
@@ -22,6 +25,9 @@ Public Class Form1
 
     Private transType As String = String.Empty
 
+    ''' <summary>
+    ''' Calls when this class (Form1) is closed
+    ''' </summary>
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
 
         If Not connector Is Nothing Then
@@ -30,6 +36,17 @@ Public Class Form1
     End Sub
 
 #Region "Menu Items"
+    
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <remarks>
+    '''  <list type="bullet">
+    '''  <item><description> Opens dialog box that requests .ini configuration file from user </description></item>
+    '''  <item><description> </description></item>
+    '''  <item><description> </description></item>
+    '''  </list>
+    ''' </remarks>
     Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
         Try
 
@@ -119,6 +136,9 @@ Public Class Form1
         End Try
     End Sub
 
+    ''' <summary>
+    ''' 
+    ''' </summary>
     Private Sub DisconnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisconnectToolStripMenuItem.Click
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -167,6 +187,9 @@ Public Class Form1
         End If
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub RemoteModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoteModeToolStripMenuItem.Click
         'Disable buttons
 
@@ -179,6 +202,9 @@ Public Class Form1
 
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub LocalModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalModeToolStripMenuItem.Click
 
         Timer1.Enabled = False
@@ -206,6 +232,9 @@ Public Class Form1
 #End Region
 
 #Region "File Functions"
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
         ' Write line to file
         Try
@@ -221,6 +250,9 @@ Public Class Form1
 
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub SendSerialData()
         ' Send data to serial port
 
@@ -246,6 +278,9 @@ Public Class Form1
         End Try
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub CreateFile()
 
         'Make filename with date/time stamp
@@ -349,6 +384,10 @@ Public Class Form1
 #End Region
 
 #Region "GUI Functions"
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub ManualPanelState(Mystate As Boolean)
         PanSetHome.Enabled = Mystate
         PanManual.Enabled = Mystate
@@ -383,6 +422,10 @@ Public Class Form1
         End If
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub RemotePanelState(Mystate As Boolean)
         PanRemoteMode.Enabled = Mystate
         PanStatus.Enabled = Mystate
@@ -393,6 +436,10 @@ Public Class Form1
         LblRemoteHS.Enabled = Mystate
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub SetMode(MyMode As String)
         ' set color for mode from serial port
         LblRemoteF.BackColor = Color.Empty
@@ -413,13 +460,19 @@ Public Class Form1
 
     End Sub
 
-
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub UpdateRemoteCommands(MyCommand As String, MyParameter1 As String, MyParameter2 As String, MyParameter3 As String)
 
         LblRemoteCom.Text = MyCommand
         LblRemotePar1.Text = MyParameter1
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub ShowMessageBox(ByVal text As String, ByVal errorCode As UInteger)
         Dim errorMsg As String
 
@@ -428,6 +481,10 @@ Public Class Form1
         MessageBox.Show(text + Environment.NewLine + errorMsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Property DisplayWindow() As RichTextBox
         Get
             Return _displayWindow
@@ -436,15 +493,26 @@ Public Class Form1
             _displayWindow = value
         End Set
     End Property
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub DisplayData(ByVal type As MessageType, ByVal msg As String)
         RichTextBox1.Invoke(New EventHandler(AddressOf DoDisplay))
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub DoDisplay(ByVal sender As Object, ByVal e As EventArgs)
         RichTextBox1.SelectedText = String.Empty
         RichTextBox1.AppendText(_msg)
         RichTextBox1.ScrollToCaret()
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Property Message() As String
         Get
             Return _msg
@@ -453,6 +521,10 @@ Public Class Form1
             _msg = value
         End Set
     End Property
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Property Type() As MessageType
         Get
             Return _type
@@ -466,6 +538,9 @@ Public Class Form1
 
 #Region "Formulas"
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Function GetTargetCurrentperLoadmA(EncoderValue As Decimal) As Decimal
         'FormulaCurrentPerLoadVsEncoderCounts
         Dim myvalue As Decimal
@@ -478,6 +553,9 @@ Public Class Form1
 
     End Function
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Function GetPlateHeight(EncoderPosition As Decimal) As Decimal
         'FormulaHeightVsEncoder
 
@@ -490,6 +568,10 @@ Public Class Form1
         Return myvalue
 
     End Function
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Function GetEncoderPosition(PlateHeight As Decimal) As Decimal
         'FormulaEncoderVsHeight
         Dim myvalue As Decimal
@@ -503,6 +585,9 @@ Public Class Form1
 
     End Function
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Function CalculateLoadAtCurrent(EncoderCounts As Decimal, MyCurrent As Decimal) As Decimal
         'FormulaLoadPerCurrentVsEncoderCounts
         Dim myvalue As Decimal
@@ -517,6 +602,9 @@ Public Class Form1
 
 #Region "Commands For Maxon"
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub SetCurrent(ICurrent As Integer)
         'Set current
         If epos Is Nothing Then
@@ -541,6 +629,10 @@ Public Class Form1
             End Try
         End If
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub CheckForPause()
 
         'Pause
@@ -549,6 +641,10 @@ Public Class Form1
         Loop
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub SetMoveParameter()
         'Set move parameters
         If epos Is Nothing Then
@@ -574,6 +670,12 @@ Public Class Form1
         End If
     End Sub
 
+    ''' <summary>
+    '''  Moves to relative position by amount specified (as opposed to absolute postion via MoveToPositionABS)
+    ''' </summary>
+    ''' <remarks>
+    ''' Rename to MoveToPositionREL, for clarity & searchability?
+    '''</remarks>
     Private Sub MoveToPosition(EncoderNum As Integer)
         ' Move to position relative
         If epos Is Nothing Then
@@ -609,6 +711,9 @@ Public Class Form1
         End If
     End Sub
 
+    ''' <summary>
+    '''  Move to absolute position on encoder (as opposed to relative postion via MoveToPosition)
+    ''' </summary>
     Private Sub MoveToPositionABS(EncoderNum As Integer)
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -638,6 +743,9 @@ Public Class Form1
         End If
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub GetCurrentData()
         If epos Is Nothing Then
             ' object doesn't exist yet
@@ -701,6 +809,10 @@ Public Class Form1
         End If
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub BtnSetZero_Click(sender As Object, e As EventArgs) Handles BtnSetZero.Click
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -737,6 +849,9 @@ Public Class Form1
 
 #Region "Button Click"
 
+    ''' <summary>
+    ''' Event handler for Button clicks (same as all other Btn---_Click Subs in this region)
+    ''' </summary>
     Private Sub BtnStartOC_Click(sender As Object, e As EventArgs) Handles BtnStartOC.Click
         ToolStripStatusLabel4.Text = "Busy"
 
@@ -782,6 +897,7 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
 
     End Sub
+
     Private Sub BtnPauseOc_Click(sender As Object, e As EventArgs) Handles BtnPauseOc.Click
         OperationStatus = "Pause"
         ToolStripStatusLabel4.Text = "Pause"
@@ -942,7 +1058,9 @@ Public Class Form1
 #Region "Arrow Buttons"
 
 
-
+    ''' <summary>
+    '''  Handles Mouse direction controls (same for all in region)
+    ''' </summary>
     Private Sub NUDTargetLoad_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetLoad.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetLoad.Increment = InputBox("Enter new step value", "Step Value", NUDTargetLoad.Increment)
@@ -1008,6 +1126,10 @@ Public Class Form1
 #End Region
 
 #Region "Operations"
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub OperationCycle()
         Dim MyCurrentTarget As Decimal
 
@@ -1121,6 +1243,10 @@ Public Class Form1
             End If
         End If
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub CollapsePlates()
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -1142,6 +1268,10 @@ Public Class Form1
         End If
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub LoadOperation()
         Dim MyTargetForce As Decimal
 
@@ -1201,6 +1331,10 @@ Public Class Form1
 
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Public Sub Seek()
 
 
@@ -1229,6 +1363,10 @@ Public Class Form1
 
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub Force()
         Dim MyTargetForce As Decimal
 
@@ -1288,6 +1426,10 @@ Public Class Form1
                 End If
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub Distance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
 
@@ -1372,6 +1514,10 @@ Public Class Form1
 
 
     End Sub
+    
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub RampForce(MyTargetForce As Decimal)
 
 
@@ -1431,6 +1577,9 @@ Public Class Form1
 
     End Sub
 
+    ''' <summary>
+    '''  
+    ''' </summary>
     Private Sub RampDistance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
         OperationStatus = "Start"
@@ -1510,6 +1659,16 @@ Public Class Form1
 
     End Sub
 
+    ''' <summary>
+    ''' Safety check that verifies current load is within limit
+    ''' </summary>
+    ''' <remarks> If load is above limit
+    ''' <list type="bullet">
+    ''' <item><description> Output safety warning to terminal. </description></item>
+    ''' <item><description> Move down to predefined position or by predefined amount. </description></item>
+    ''' <item><description> Temp Pause reading Motor current, either for current protection or avoid bad reading feedback. </description></item>
+    ''' </list>
+    ''' </remarks>
     Private Sub CheckMaxForce()
         'Check load     
         If LoadCurrentN > LoadMax Then
@@ -1519,6 +1678,10 @@ Public Class Form1
             GetCurrentData()
         End If
     End Sub
+    
+    ''' <summary>
+    ''' Moves to absolute 0
+    ''' </summary>
     Public Sub MoveToHomeZero()
         OperationStatus = "Start"
         MoveToPositionABS(0)
@@ -1528,6 +1691,10 @@ Public Class Form1
         OperationStatus = "Stop"
 
     End Sub
+    
+    ''' <summary>
+    ''' Moves to height were Encoder started when calling <c>OpenToolStripMenuItem_Click</c>
+    ''' </summary>
     Public Sub MoveToStartHeight()
         OperationStatus = "Start"
         MoveToPositionABS(NUDSHeight.Value)
