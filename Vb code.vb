@@ -967,7 +967,6 @@ Public Class Form1
                 MessageBox.Show(eb.Message)
             End Try
         End If
-
     End Sub
 
     Private Sub BtnMoveUP_Click(sender As Object, e As EventArgs) Handles BtnMoveUp.Click
@@ -1039,10 +1038,12 @@ Public Class Form1
         GetCurrentData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
-
-
+    
 #End Region
 
+    
+    
+    
 #Region "Arrow Buttons"
 
 
@@ -1054,6 +1055,7 @@ Public Class Form1
             NUDTargetLoad.Increment = InputBox("Enter new step value", "Step Value", NUDTargetLoad.Increment)
         End If
     End Sub
+    
     Private Sub NUDTargetDistance_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetDistance.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetDistance.Increment = InputBox("Enter new step value", "Step Value", NUDTargetDistance.Increment)
@@ -1065,31 +1067,37 @@ Public Class Form1
             NUDDistance.Increment = InputBox("Enter new step value", "Step Value", NUDDistance.Increment)
         End If
     End Sub
+    
     Private Sub NUDHomingCurrent_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDHomingCurrent.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDHomingCurrent.Increment = InputBox("Enter new step value", "Step Value", NUDHomingCurrent.Increment)
         End If
     End Sub
+    
     Private Sub NUDMM_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMM.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMM.Increment = InputBox("Enter new step value", "Step Value", NUDMM.Increment)
         End If
     End Sub
+    
     Private Sub NUDMCTK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMCTK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMCTK.Increment = InputBox("Enter new step value", "Step Value", NUDMCTK.Increment)
         End If
     End Sub
+    
     Private Sub NUDPHK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDPHK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDPHK.Increment = InputBox("Enter new step value", "Step Value", NUDPHK.Increment)
         End If
     End Sub
+    
     Private Sub NUDLACK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDLACK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDLACK.Increment = InputBox("Enter new step value", "Step Value", NUDLACK.Increment)
         End If
     End Sub
+    
     Private Sub NUDECAK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDECAK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDECAK.Increment = InputBox("Enter new step value", "Step Value", NUDECAK.Increment)
@@ -1102,17 +1110,18 @@ Public Class Form1
         LoadTarget = NUDTargetLoad.Value
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
         LblTargetLoadLB.Text = FormatNumber(NUDTargetLoad.Value * 0.2248, 2)
-
     End Sub
+    
     Private Sub NUDTargetDistance_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetDistance.ValueChanged
 
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
-
     End Sub
-
-
+    
 #End Region
 
+    
+    
+    
 #Region "Operations"
     
     ''' <summary>
@@ -1158,10 +1167,6 @@ Public Class Form1
                 End If
             End If
         Else
-
-
-
-
             'Current is not within tolerance
             If CCurrent < MyCurrentTarget Then
 
@@ -1188,8 +1193,6 @@ Public Class Form1
 
                 'Check load 
                 CheckMaxForce()
-
-
             Else
                 ' "Down - Up"  Current is greater than target
 
@@ -1226,8 +1229,6 @@ Public Class Form1
 
                 'Check load 
                 CheckMaxForce()
-
-
             End If
         End If
     End Sub
@@ -1252,9 +1253,7 @@ Public Class Form1
                 GetCurrentData()
                 Wait(400)
             Loop Until OperationStatus = "Stop"
-
         End If
-
     End Sub
 
     ''' <summary>
@@ -1289,7 +1288,6 @@ Public Class Form1
         GetCurrentData()
 
         Do
-
             'Send write to file
             AddFileLine("Up", "No", OperationMode)
 
@@ -1302,7 +1300,6 @@ Public Class Form1
 
             'Check load 
             CheckMaxForce()
-
         Loop Until OperationStatus = "Stop" Or CCurrent > MyTargetForce
 
         'loop until "Stop Cycle" button is click
@@ -1316,8 +1313,6 @@ Public Class Form1
             ManualPanelState(True)
             RemotePanelState(False)
         End If
-
-
     End Sub
     
     ''' <summary>
@@ -1348,8 +1343,6 @@ Public Class Form1
             OperationCycle()
             Wait(SeekCyclePause)
         Loop Until OperationStatus = "Stop"
-
-
     End Sub
     
     ''' <summary>
@@ -1398,7 +1391,6 @@ Public Class Form1
 
             'Check load 
             CheckMaxForce()
-
         Loop Until OperationStatus = "Stop" Or LoadCurrentN > MyTargetForce
 
         'loop until "Stop Cycle" button is click
@@ -1412,7 +1404,6 @@ Public Class Form1
             ManualPanelState(True)
             RemotePanelState(False)
         End If
-
     End Sub
     
     ''' <summary>
@@ -1442,7 +1433,6 @@ Public Class Form1
 
 
         Do
-
             'Send write to file
             AddFileLine("Up", "No", OperationMode)
 
@@ -1453,11 +1443,9 @@ Public Class Form1
 
             'Check load 
             CheckMaxForce()
-
         Loop Until OperationStatus = "Stop" Or GetPlateHeight(CEncoder) >= MyTargetDistance
 
         Do
-
             ' Send Serial Data And write to file
             AddFileLine("Stay", "Yes", OperationMode)
             SendSerialData()
@@ -1468,7 +1456,6 @@ Public Class Form1
 
                 MoveToPosition(DistanceTuneStep)
                 Wait(MotorCurrentReadPause)
-
             ElseIf newtarget < -DistanceTolerance Then
 
                 MoveToPosition(-DistanceStayStep)
@@ -1495,16 +1482,13 @@ Public Class Form1
             ManualPanelState(True)
             RemotePanelState(False)
         End If
-
-
     End Sub
     
     ''' <summary>
     '''  
     ''' </summary>
     Private Sub RampForce(MyTargetForce As Decimal)
-
-
+        
         OperationStatus = "Start"
 
         CreateFile()
@@ -1531,7 +1515,6 @@ Public Class Form1
         GetCurrentData()
 
         Do
-
             'Send Serial Data and write to file
             AddFileLine("Up", "Yes", OperationMode)
 
@@ -1544,7 +1527,6 @@ Public Class Form1
 
             'Check load 
             CheckMaxForce()
-
         Loop Until OperationStatus = "Stop" Or LoadCurrentN > MyTargetForce
 
         Do
@@ -1557,8 +1539,6 @@ Public Class Form1
             ManualPanelState(True)
             RemotePanelState(False)
         End If
-
-
     End Sub
 
     ''' <summary>
@@ -1570,42 +1550,39 @@ Public Class Form1
 
         CreateFile()
 
-                'Set focus to Stop button
-                BtnStopOc.Focus()
+        'Set focus to Stop button
+        BtnStopOc.Focus()
 
-                'Set move Vel,Accel,Deccel
-                SetMoveParameter()
+        'Set move Vel,Accel,Deccel
+        SetMoveParameter()
 
-                'Disable buttons
-                PanSetHome.Enabled = False
-                PanManual.Enabled = False
+        'Disable buttons
+        PanSetHome.Enabled = False
+        PanManual.Enabled = False
 
         'first move
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
         GetCurrentData()
 
-                Do
+        Do
+            'Send Serial Data and write to file
+            AddFileLine("Up", "Yes", OperationMode)
+            SendSerialData()
 
-                    'Send Serial Data and write to file
-                    AddFileLine("Up", "Yes", OperationMode)
-                    SendSerialData()
+            MoveToPosition(DistanceRampStep)
+            Wait(MotorCurrentReadPause)
+            GetCurrentData()
+            Wait(DistanceRampPause)
 
-                    MoveToPosition(DistanceRampStep)
-                    Wait(MotorCurrentReadPause)
-                    GetCurrentData()
-                    Wait(DistanceRampPause)
+            'Check load 
+            CheckMaxForce()
+        Loop Until OperationStatus = "Stop" Or GetPlateHeight(CEncoder) >= MyTargetDistance
 
-                    'Check load 
-                    CheckMaxForce()
-
-                Loop Until OperationStatus = "Stop" Or GetPlateHeight(CEncoder) >= MyTargetDistance
-
-                Do
-
-                    'Send Serial Data and write to file
-                    AddFileLine("Stay", "Yes", OperationMode)
-                    SendSerialData()
+        Do
+            'Send Serial Data and write to file
+            AddFileLine("Stay", "Yes", OperationMode)
+            SendSerialData()
 
 
             newtarget = MyTargetDistance - GetPlateHeight(CEncoder)
@@ -1627,11 +1604,9 @@ Public Class Form1
                 Wait(MotorCurrentReadPause)
                 MoveToPosition(DistanceStayStep)
                 Wait(MotorCurrentReadPause)
-
             End If
             GetCurrentData()
             Wait(DistanceRampPause)
-
         Loop Until OperationStatus = "Stop"
 
         If InRemoteMode = False Then
@@ -1639,8 +1614,6 @@ Public Class Form1
             ManualPanelState(True)
             RemotePanelState(False)
         End If
-
-
     End Sub
 
     ''' <summary>
@@ -1673,7 +1646,6 @@ Public Class Form1
         Wait(MotorCurrentReadPause)
         GetCurrentData()
         OperationStatus = "Stop"
-
     End Sub
     
     ''' <summary>
@@ -1685,7 +1657,6 @@ Public Class Form1
         Wait(MotorCurrentReadPause)
         GetCurrentData()
         OperationStatus = "Stop"
-
     End Sub
 
     Public Sub RemoteDistance()
