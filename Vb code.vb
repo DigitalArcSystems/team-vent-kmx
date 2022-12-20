@@ -224,8 +224,6 @@ Public Class Form1
         RemotePanelState(False)
         ToolStripStatusLabel2.Text = "Local"
         InRemoteMode = False
-
-
     End Sub
 
 
@@ -247,7 +245,6 @@ Public Class Form1
 
             MsgBox(ex.Message)
         End Try
-
     End Sub
 
     ''' <summary>
@@ -279,8 +276,11 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    ''' Save time-stamped file to memory with all current variables and constants.
     ''' </summary>
+    '''<remarks>
+    ''' ( Good to have saved in case of loss of power or state errors )
+    '''</remarks>
     Private Sub CreateFile()
 
         'Make filename with date/time stamp
@@ -376,8 +376,6 @@ Public Class Form1
             file.WriteLine("Time" & " , " & "Calc'd Height (mm)" & " , " & "Calc'd Load (N)" & " , " & "Actual Current (mA)" & " , " & "Encoder Count" & " , " & "Target Current" & " , " & "Tolerance Current" & " , " & "Decision" & " , " & "Serial Stream" & " , " & "Mode")
             file.Close()
         End If
-
-
     End Sub
 
 
@@ -405,8 +403,6 @@ Public Class Form1
             LblManjog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
             LblSLC.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
             LblRemote.BorderStyle = System.Windows.Forms.BorderStyle.None
-
-
         Else
             LblSetHome.BackColor = Color.Empty
             LblManjog.BackColor = Color.Empty
@@ -417,10 +413,7 @@ Public Class Form1
             LblManjog.BorderStyle = System.Windows.Forms.BorderStyle.None
             LblSLC.BorderStyle = System.Windows.Forms.BorderStyle.None
             LblRemote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-
-
         End If
-
     End Sub
     
     ''' <summary>
@@ -434,11 +427,10 @@ Public Class Form1
         LblRemoteCS.Enabled = Mystate
         LblRemoteM.Enabled = Mystate
         LblRemoteHS.Enabled = Mystate
-
     End Sub
-    
+
     ''' <summary>
-    '''  
+    ''' Highlight UI element for current type of movement
     ''' </summary>
     Private Sub SetMode(MyMode As String)
         ' set color for mode from serial port
@@ -457,17 +449,14 @@ Public Class Form1
             Case "RampDistance"
                 LblRemoteRD.BackColor = Color.Orange
         End Select
-
     End Sub
 
     ''' <summary>
     '''  
     ''' </summary>
     Private Sub UpdateRemoteCommands(MyCommand As String, MyParameter1 As String, MyParameter2 As String, MyParameter3 As String)
-
         LblRemoteCom.Text = MyCommand
         LblRemotePar1.Text = MyParameter1
-
     End Sub
     
     ''' <summary>
@@ -479,7 +468,6 @@ Public Class Form1
         errorMsg = String.Format("ErrorCode: {1:X8}", text, errorCode)
 
         MessageBox.Show(text + Environment.NewLine + errorMsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
     End Sub
     
     ''' <summary>
@@ -536,6 +524,9 @@ Public Class Form1
 
 #End Region
 
+    
+    
+    
 #Region "Formulas"
 
     ''' <summary>
@@ -550,7 +541,6 @@ Public Class Form1
         myvalue = NUDMCTK.Value * ((MotorCurrentTarget_b4 * (EncoderValue) ^ 4 + MotorCurrentTarget_b3 * (EncoderValue) ^ 3 + MotorCurrentTarget_b2 * (EncoderValue) ^ 2 + MotorCurrentTarget_b1 * (EncoderValue) + MotorCurrentTarget_a))
 
         Return myvalue
-
     End Function
 
     ''' <summary>
@@ -566,7 +556,6 @@ Public Class Form1
         myvalue = NUDPHK.Value * (PlateHeight_b4 * (EncoderPosition) ^ 4 + PlateHeight_b3 * ((EncoderPosition) ^ 3) + PlateHeight_b2 * ((EncoderPosition) ^ 2) + PlateHeight_b1 * (EncoderPosition) + a_off)
 
         Return myvalue
-
     End Function
     
     ''' <summary>
@@ -582,7 +571,6 @@ Public Class Form1
         myvalue = NUDECAK.Value * (EncoderCountsAbsolute_b4 * (PlateHeight) ^ 4 + EncoderCountsAbsolute_b3 * ((PlateHeight) ^ 3) + EncoderCountsAbsolute_b2 * ((PlateHeight) ^ 2) + EncoderCountsAbsolute_b1 * (PlateHeight) + a_off)
 
         Return myvalue
-
     End Function
 
     ''' <summary>
@@ -595,11 +583,13 @@ Public Class Form1
         myvalue = NUDLACK.Value * MyCurrent * (LoadAtCurrent_b3 * (EncoderCounts) ^ 3 + LoadAtCurrent_b2 * (EncoderCounts) ^ 2 + LoadAtCurrent_b1 * (EncoderCounts) + LoadAtCurrent_a)
 
         Return myvalue
-
     End Function
 
 #End Region
 
+    
+    
+    
 #Region "Commands For Maxon"
 
     ''' <summary>
@@ -634,12 +624,10 @@ Public Class Form1
     '''  
     ''' </summary>
     Public Sub CheckForPause()
-
         'Pause
         Do While OperationStatus = "Pause"
             Wait(1000)
         Loop
-
     End Sub
     
     ''' <summary>
@@ -807,7 +795,6 @@ Public Class Form1
                 MessageBox.Show(ex.Message)
             End Try
         End If
-
     End Sub
     
     ''' <summary>
@@ -841,12 +828,14 @@ Public Class Form1
                 MessageBox.Show(eb.Message)
             End Try
         End If
-
     End Sub
 
 
 #End Region
 
+    
+    
+    
 #Region "Button Click"
 
     ''' <summary>
@@ -895,24 +884,22 @@ Public Class Form1
         'Enable buttons
         ManualPanelState(True)
         ToolStripStatusLabel4.Text = "Idle"
-
     End Sub
 
     Private Sub BtnPauseOc_Click(sender As Object, e As EventArgs) Handles BtnPauseOc.Click
         OperationStatus = "Pause"
         ToolStripStatusLabel4.Text = "Pause"
-
     End Sub
+    
     Private Sub BtnResumeOc_Click(sender As Object, e As EventArgs) Handles BtnResumeOc.Click
         OperationStatus = "Start"
         ToolStripStatusLabel4.Text = "Busy"
-
     End Sub
+    
     Private Sub BtnStopOc_Click(sender As Object, e As EventArgs) Handles BtnStopOc.Click
         'Stop Operation cycle
         OperationStatus = "Stop"
         ToolStripStatusLabel4.Text = "Idle"
-
     End Sub
 
     Private Sub BtnRemoteStop_Click(sender As Object, e As EventArgs) Handles BtnRemoteStop.Click
@@ -926,6 +913,7 @@ Public Class Form1
         CollapsePlates()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
+    
     Private Sub BtnRetractOc_Click(sender As Object, e As EventArgs) Handles BtnRetractOc.Click
         ToolStripStatusLabel4.Text = "Busy"
         CollapsePlates()
@@ -1243,7 +1231,7 @@ Public Class Form1
             End If
         End If
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -1268,7 +1256,7 @@ Public Class Form1
         End If
 
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -1340,26 +1328,26 @@ Public Class Form1
 
         OperationStatus = "Start"
 
-                CreateFile()
+        CreateFile()
 
-                'Set focus to Stop button
-                BtnStopOc.Focus()
+        'Set focus to Stop button
+        BtnStopOc.Focus()
 
-                'Seek Cycle runs "Down - Up"
-                RunSeek = True
+        'Seek Cycle runs "Down - Up"
+        RunSeek = True
 
-                'Set move Vel,Accel,Deccel
-                SetMoveParameter()
+        'Set move Vel,Accel,Deccel
+        SetMoveParameter()
 
-                'Disable buttons
-                PanSetHome.Enabled = False
-                PanManual.Enabled = False
+        'Disable buttons
+        PanSetHome.Enabled = False
+        PanManual.Enabled = False
 
-                'loop until "Stop Cycle" button is click
-                Do
-                    OperationCycle()
-                    Wait(SeekCyclePause)
-                Loop Until OperationStatus = "Stop"
+        'loop until "Stop Cycle" button is click
+        Do
+            OperationCycle()
+            Wait(SeekCyclePause)
+        Loop Until OperationStatus = "Stop"
 
 
     End Sub
@@ -1373,7 +1361,7 @@ Public Class Form1
 
         OperationStatus = "Start"
 
-                CreateFile()
+        CreateFile()
 
         'Set focus to Stop button
         '     BtnStopOc.Focus()
@@ -1381,15 +1369,15 @@ Public Class Form1
         'Seek Cycle runs "Down - Up"
         RunSeek = True
 
-                'Set move Vel,Accel,Deccel
-                SetMoveParameter()
+        'Set move Vel,Accel,Deccel
+        SetMoveParameter()
 
-                'Disable buttons
-                PanSetHome.Enabled = False
-                PanManual.Enabled = False
+        'Disable buttons
+        PanSetHome.Enabled = False
+        PanManual.Enabled = False
 
-                ' Move by force to % of target load
-                MyTargetForce = NUDTargetLoad.Value * (LoadApproachForce / 100)
+        ' Move by force to % of target load
+        MyTargetForce = NUDTargetLoad.Value * (LoadApproachForce / 100)
 
         'first move
         MoveToPosition(-FirstMoveStep)
@@ -1415,15 +1403,15 @@ Public Class Form1
 
         'loop until "Stop Cycle" button is click
         Do
-                    OperationCycle()
-                    Wait(SeekCyclePause)
-                Loop Until OperationStatus = "Stop"
+            OperationCycle()
+            Wait(SeekCyclePause)
+        Loop Until OperationStatus = "Stop"
 
-                If InRemoteMode = False Then
-                    'Enable buttons
-                    ManualPanelState(True)
-                    RemotePanelState(False)
-                End If
+        If InRemoteMode = False Then
+            'Enable buttons
+            ManualPanelState(True)
+            RemotePanelState(False)
+        End If
 
     End Sub
     
@@ -1493,24 +1481,20 @@ Public Class Form1
                 Wait(MotorCurrentReadPause)
                 MoveToPosition(DistanceStayStep)
                 Wait(MotorCurrentReadPause)
-
             End If
-
 
             GetCurrentData()
             Wait(DistancePause)
 
             '  Check Load 
             CheckMaxForce()
-
-
         Loop Until OperationStatus = "Stop"
 
-                If InRemoteMode = False Then
-                    'Enable buttons
-                    ManualPanelState(True)
-                    RemotePanelState(False)
-                End If
+        If InRemoteMode = False Then
+            'Enable buttons
+            ManualPanelState(True)
+            RemotePanelState(False)
+        End If
 
 
     End Sub
@@ -1650,11 +1634,11 @@ Public Class Form1
 
         Loop Until OperationStatus = "Stop"
 
-                If InRemoteMode = False Then
-                    'Enable buttons
-                    ManualPanelState(True)
-                    RemotePanelState(False)
-                End If
+        If InRemoteMode = False Then
+            'Enable buttons
+            ManualPanelState(True)
+            RemotePanelState(False)
+        End If
 
 
     End Sub
