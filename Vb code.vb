@@ -36,9 +36,10 @@ Public Class Form1
     End Sub
 
 #Region "Menu Items"
-    
+
     ''' <summary>
-    ''' 
+    '''     ''' UI Button in strip along top for "Local Control".
+    ''' Populates UI, using .ini file variables 
     ''' </summary>
     ''' <remarks>
     '''  <list type="bullet">
@@ -137,6 +138,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
+    ''' UI Button in strip along top for "Remote Control".
     ''' 
     ''' </summary>
     Private Sub DisconnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisconnectToolStripMenuItem.Click
@@ -203,7 +205,8 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    ''' UI Button in strip along top for "Local Control".
+    ''' 
     ''' </summary>
     Private Sub LocalModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalModeToolStripMenuItem.Click
 
@@ -382,7 +385,7 @@ Public Class Form1
 #End Region
 
 #Region "GUI Functions"
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -415,7 +418,7 @@ Public Class Form1
             LblRemote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         End If
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -458,7 +461,7 @@ Public Class Form1
         LblRemoteCom.Text = MyCommand
         LblRemotePar1.Text = MyParameter1
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -469,7 +472,7 @@ Public Class Form1
 
         MessageBox.Show(text + Environment.NewLine + errorMsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -481,7 +484,7 @@ Public Class Form1
             _displayWindow = value
         End Set
     End Property
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -497,7 +500,7 @@ Public Class Form1
         RichTextBox1.AppendText(_msg)
         RichTextBox1.ScrollToCaret()
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -509,7 +512,7 @@ Public Class Form1
             _msg = value
         End Set
     End Property
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -524,9 +527,9 @@ Public Class Form1
 
 #End Region
 
-    
-    
-    
+
+
+
 #Region "Formulas"
 
     ''' <summary>
@@ -557,7 +560,7 @@ Public Class Form1
 
         Return myvalue
     End Function
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -587,9 +590,9 @@ Public Class Form1
 
 #End Region
 
-    
-    
-    
+
+
+
 #Region "Commands For Maxon"
 
     ''' <summary>
@@ -619,7 +622,7 @@ Public Class Form1
             End Try
         End If
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -629,7 +632,7 @@ Public Class Form1
             Wait(1000)
         Loop
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -796,7 +799,7 @@ Public Class Form1
             End Try
         End If
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -833,9 +836,9 @@ Public Class Form1
 
 #End Region
 
-    
-    
-    
+
+
+
 #Region "Button Click"
 
     ''' <summary>
@@ -890,12 +893,12 @@ Public Class Form1
         OperationStatus = "Pause"
         ToolStripStatusLabel4.Text = "Pause"
     End Sub
-    
+
     Private Sub BtnResumeOc_Click(sender As Object, e As EventArgs) Handles BtnResumeOc.Click
         OperationStatus = "Start"
         ToolStripStatusLabel4.Text = "Busy"
     End Sub
-    
+
     Private Sub BtnStopOc_Click(sender As Object, e As EventArgs) Handles BtnStopOc.Click
         'Stop Operation cycle
         OperationStatus = "Stop"
@@ -913,7 +916,7 @@ Public Class Form1
         CollapsePlates()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
-    
+
     Private Sub BtnRetractOc_Click(sender As Object, e As EventArgs) Handles BtnRetractOc.Click
         ToolStripStatusLabel4.Text = "Busy"
         CollapsePlates()
@@ -1038,12 +1041,12 @@ Public Class Form1
         GetCurrentData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
-    
+
 #End Region
 
-    
-    
-    
+
+
+
 #Region "Arrow Buttons"
 
 
@@ -1055,7 +1058,7 @@ Public Class Form1
             NUDTargetLoad.Increment = InputBox("Enter new step value", "Step Value", NUDTargetLoad.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDTargetDistance_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetDistance.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetDistance.Increment = InputBox("Enter new step value", "Step Value", NUDTargetDistance.Increment)
@@ -1067,37 +1070,37 @@ Public Class Form1
             NUDDistance.Increment = InputBox("Enter new step value", "Step Value", NUDDistance.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDHomingCurrent_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDHomingCurrent.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDHomingCurrent.Increment = InputBox("Enter new step value", "Step Value", NUDHomingCurrent.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDMM_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMM.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMM.Increment = InputBox("Enter new step value", "Step Value", NUDMM.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDMCTK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMCTK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMCTK.Increment = InputBox("Enter new step value", "Step Value", NUDMCTK.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDPHK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDPHK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDPHK.Increment = InputBox("Enter new step value", "Step Value", NUDPHK.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDLACK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDLACK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDLACK.Increment = InputBox("Enter new step value", "Step Value", NUDLACK.Increment)
         End If
     End Sub
-    
+
     Private Sub NUDECAK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDECAK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDECAK.Increment = InputBox("Enter new step value", "Step Value", NUDECAK.Increment)
@@ -1111,19 +1114,19 @@ Public Class Form1
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
         LblTargetLoadLB.Text = FormatNumber(NUDTargetLoad.Value * 0.2248, 2)
     End Sub
-    
+
     Private Sub NUDTargetDistance_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetDistance.ValueChanged
 
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
     End Sub
-    
+
 #End Region
 
-    
-    
-    
+
+
+
 #Region "Operations"
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -1314,7 +1317,7 @@ Public Class Form1
             RemotePanelState(False)
         End If
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -1344,7 +1347,7 @@ Public Class Form1
             Wait(SeekCyclePause)
         Loop Until OperationStatus = "Stop"
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -1405,7 +1408,7 @@ Public Class Form1
             RemotePanelState(False)
         End If
     End Sub
-    
+
     ''' <summary>
     '''  
     ''' </summary>
@@ -1483,12 +1486,13 @@ Public Class Form1
             RemotePanelState(False)
         End If
     End Sub
-    
+
     ''' <summary>
-    '''  
+    ''' Increments position in steps until Load matches or exceeds target force
+    ''' ( Parameter MyTargetForce is overwritten without being used )
     ''' </summary>
     Private Sub RampForce(MyTargetForce As Decimal)
-        
+
         OperationStatus = "Start"
 
         CreateFile()
@@ -1542,7 +1546,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    ''' Increments position in steps until Position matches or exceeds target position
     ''' </summary>
     Private Sub RampDistance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
