@@ -38,13 +38,12 @@ Public Class Form1
 #Region "Menu Items"
 
     ''' <summary>
-    '''     ''' UI Button in strip along top for "Local Control".
-    ''' Populates UI, using .ini file variables 
+    ''' "Connect" Button in UI's ribbon/strip-menu (along top).
     ''' </summary>
     ''' <remarks>
     '''  <list type="bullet">
     '''  <item><description> Opens dialog box that requests .ini configuration file from user </description></item>
-    '''  <item><description> </description></item>
+    '''  <item><description> Populates UI, using .ini file variables </description></item>
     '''  <item><description> </description></item>
     '''  </list>
     ''' </remarks>
@@ -138,8 +137,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    ''' UI Button in strip along top for "Remote Control".
-    ''' 
+    ''' "Disconnect" Button in UI's ribbon/strip-menu (along top).
     ''' </summary>
     Private Sub DisconnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisconnectToolStripMenuItem.Click
         If epos Is Nothing Then
@@ -190,7 +188,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    ''' "Remote Control" Button in UI's ribbon/strip-menu (along top).
     ''' </summary>
     Private Sub RemoteModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoteModeToolStripMenuItem.Click
         'Disable buttons
@@ -205,8 +203,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    ''' UI Button in strip along top for "Local Control".
-    ''' 
+    ''' "Local Control" Button in UI's ribbon/strip-menu (along top).
     ''' </summary>
     Private Sub LocalModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalModeToolStripMenuItem.Click
 

@@ -1,6 +1,29 @@
 
 
 ''' <summary>
+''' 
+''' </summary>
+''' <remarks>If
+''' <list type="bullet">
+''' <item><description>  </description></item>
+''' <item><description>  </description></item>
+''' <item><description>  </description></item>
+''' </list>
+''' </remarks>
+
+
+''' <summary>
+''' Safety check that verifies current load is within limit
+''' </summary>
+''' <remarks>If load is above limit
+''' <list type="bullet">
+''' <item><description> Output safety warning to terminal. </description></item>
+''' <item><description> Move down to predefined position / by predefined amount.</description></item>
+''' <item><description> Temp Pause reading Motor current (either for current protection or avoid bad reading feedback). </description></item>
+''' </list>
+''' </remarks>
+
+''' <summary>
 ''' OPERATION CYCLE - 
 ''' </summary>
 Private Sub OperationCycle()

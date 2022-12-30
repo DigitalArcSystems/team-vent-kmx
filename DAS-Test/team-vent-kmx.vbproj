@@ -43,6 +43,10 @@
         <OptionInfer>On</OptionInfer>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="EposCmd.Net, Version=6.7.1.0, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\..\KniemaxMain\KniemaxMain\bin\Debug\EposCmd.Net.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
@@ -63,6 +67,10 @@
         <Import Include="System.Threading.Tasks" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Form1.Designer.vb">
+          <DependentUpon>Vb code.vb</DependentUpon>
+        </Compile>
+        <Compile Include="lib\Definitions.vb" />
         <Compile Include="My Project\AssemblyInfo.vb" />
         <Compile Include="My Project\Application.Designer.vb">
             <AutoGen>True</AutoGen>
@@ -77,9 +85,15 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+      <Content Include="lib\Definitions.bas" />
       <Content Include="lib\EposCmd.dll" />
       <Content Include="lib\EposCmd.Net.dll" />
       <Content Include="lib\System.Net.Http.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Form1.resx">
+        <DependentUpon>Vb code.vb</DependentUpon>
+      </EmbeddedResource>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

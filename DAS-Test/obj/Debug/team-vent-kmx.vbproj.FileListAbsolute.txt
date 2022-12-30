@@ -1,0 +1,2 @@
+S:\team-vent-kmx\obj\Debug\team-vent-kmx.vbproj.AssemblyReference.cache
+S:\team-vent-kmx\obj\Debug\team-vent-kmx.vbproj.CoreCompileInputs.cache
