@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="KMX-TB-PRG-001.exe" version="1.0.0.0" publicKeyToken="e04d1457be0d4e96" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="KMX-TB-PRG-001" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="KMX-TB-PRG-001.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="EposCmd.Net.dll" size="210016">
+      <assemblyIdentity name="EposCmd.Net" version="6.7.1.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>TwLI6yA18k+n9b2NrZBSAKrDIE1fs47A2hcl0jCjBjI=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="KMX-TB-PRG-001.exe" size="41992">
+      <assemblyIdentity name="KMX-TB-PRG-001" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>zitq+f1tqgCEC26r6cmywMpGZ/TsnnYHtkd4rwO3QlE=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="KMX-TB-PRG-001.exe.config" size="188">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>VDy5/VrQni+RSOb/6uEMWMc6bGQEaa2e2UdeWG+KK1I=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=TRI-LT-DARREN\Clifford Huie" issuerKeyHash="7a010550a998fe8a87a2b6a541e663e33403d979" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>GUNELONErlBoDjb5DbiJ9n8pxok59Z+zNOBwg41CPJ0=</DigestValue></Reference></SignedInfo><SignatureValue>HU7tiBdByWCBUfAtEvNQDK9ensGAU1c+5SkbTHe2dr4gmfr/RdWSeVrQ2nOdvpZyLHUAp6+2ZdDiZqqFRS6DInqcdJjQG6k4ms4FulHbXgyyMo6CGTVgBICVoHGquX3+rwb4TqlULzescTbIOq5xR3ZvODeoGF2yRHxGKYOzOT0=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>2yr1AcrDit9WGX1dycibOs5aNxcXRBGX2ojGWHddptIlQBVU4Q3vsTH3dl7KvJVt7TZKjYLemEkYVkCPpTItcOCisIzzT1B1oVwKu+SsSS3IZTUFdRznBvxg79WJY2ASbCDPKFSFdGR01oTt7YgsCGQ9FXU6fmf7ha0YErij3h0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="9d3c428d8370e034b39ff53989c6297ff689b80df9360e6850ae44e32c444319" Description="" Url=""><as:assemblyIdentity name="KMX-TB-PRG-001.exe" version="1.0.0.0" publicKeyToken="e04d1457be0d4e96" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=TRI-LT-DARREN\Clifford Huie</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>TPVM/q2R+ADzDs3imPvQ/DroV/zkYu1/gCNFLI2y0fo=</DigestValue></Reference></SignedInfo><SignatureValue>MRk8KGNv2ZP3FJdghDjhsM0Krk9kYzLOb/OxugjkVV+TnTPRvlyLb6F2CbO7gcYbyDs5xRkvltDOLffGITFvhpRb4bMAipxTvbwrwMNBL7kLj3jM6csqGIrHqAl7TuU+jR3SLnb3swi+rdHNBRYcQYZE6DUm3ggqREKxFX2tW18=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>2yr1AcrDit9WGX1dycibOs5aNxcXRBGX2ojGWHddptIlQBVU4Q3vsTH3dl7KvJVt7TZKjYLemEkYVkCPpTItcOCisIzzT1B1oVwKu+SsSS3IZTUFdRznBvxg79WJY2ASbCDPKFSFdGR01oTt7YgsCGQ9FXU6fmf7ha0YErij3h0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIICBTCCAW6gAwIBAgIQEt3mV2+GnrlBNZdjDb4bQTANBgkqhkiG9w0BAQsFADBBMT8wPQYDVQQDHjYAVABSAEkALQBMAFQALQBEAEEAUgBSAEUATgBcAEMAbABpAGYAZgBvAHIAZAAgAEgAdQBpAGUwHhcNMjIwNDAxMTQ1NDE4WhcNMjMwNDAxMjA1NDE4WjBBMT8wPQYDVQQDHjYAVABSAEkALQBMAFQALQBEAEEAUgBSAEUATgBcAEMAbABpAGYAZgBvAHIAZAAgAEgAdQBpAGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANsq9QHKw4rfVhl9XcnImzrOWjcXF0QRl9qIxlh3XabSJUAVVOEN77Ex93ZeyryVbe02So2C3phJGFZAj6UyLXDgorCM809QdaFcCrvkrEktyGU1BXUc5wb8YO/ViWNgEmwgzyhUhXRkdNaE7e2ILAhkPRV1On5n+4WtGBK4o94dAgMBAAEwDQYJKoZIhvcNAQELBQADgYEAYFrZ1KRN0VbXcbqusTbQBZWr6LOEoTHO1rC+DzTZu4NFxMExPkMCTbRcXfTf/NvsZqnp6o+v4bahiCbsh9GWKllZbJoP64CFadTHUoiT84MuePwPCV9lPjXznHIpbB/Kl5L2xFaSchTKO5kj9MiBIlIyvEQUwq9BogrpIXLeJPE=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
