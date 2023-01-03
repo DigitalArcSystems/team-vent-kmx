@@ -176,7 +176,7 @@ Partial Class Form1
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.MenuStrip1.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenToolStripMenuItem, Me.DisconnectToolStripMenuItem, Me.RemoteModeToolStripMenuItem, Me.LocalModeToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
@@ -483,7 +483,7 @@ Partial Class Form1
         Me.Label1.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.Location = New System.Drawing.Point(1482, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(30, 16)
+        Me.Label1.Size = New System.Drawing.Size(31, 16)
         Me.Label1.TabIndex = 52
         Me.Label1.Text = "Ver:"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -501,7 +501,7 @@ Partial Class Form1
         Me.PanSetHome.Controls.Add(Me.BtnSetZero)
         Me.PanSetHome.Controls.Add(Me.Label2)
         Me.PanSetHome.Controls.Add(Me.Label9)
-        Me.PanSetHome.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PanSetHome.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PanSetHome.Location = New System.Drawing.Point(12, 79)
         Me.PanSetHome.Name = "PanSetHome"
         Me.PanSetHome.Size = New System.Drawing.Size(445, 206)
@@ -1022,7 +1022,7 @@ Partial Class Form1
         Me.PanManual.Controls.Add(Me.BtnMoveUpmm)
         Me.PanManual.Controls.Add(Me.BtnMoveDown)
         Me.PanManual.Controls.Add(Me.BtnMoveUp)
-        Me.PanManual.Font = New System.Drawing.Font("Arial Narrow", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.PanManual.Font = New System.Drawing.Font("Microsoft Sans Serif", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.PanManual.Location = New System.Drawing.Point(472, 79)
         Me.PanManual.Name = "PanManual"
         Me.PanManual.Size = New System.Drawing.Size(490, 255)
@@ -1623,7 +1623,7 @@ Partial Class Form1
         Me.LblVersion.Font = New System.Drawing.Font("Arial", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LblVersion.Location = New System.Drawing.Point(1512, 9)
         Me.LblVersion.Name = "LblVersion"
-        Me.LblVersion.Size = New System.Drawing.Size(32, 16)
+        Me.LblVersion.Size = New System.Drawing.Size(33, 16)
         Me.LblVersion.TabIndex = 217
         Me.LblVersion.Text = "7.15"
         '
@@ -1631,6 +1631,7 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.SystemColors.ControlDarkDark
         Me.ClientSize = New System.Drawing.Size(1595, 763)
         Me.Controls.Add(Me.LblVersion)
         Me.Controls.Add(Me.BtnRemoteStop)

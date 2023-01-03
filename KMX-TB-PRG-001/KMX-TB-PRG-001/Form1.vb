@@ -25,6 +25,15 @@ Public Class Form1
 
     Private transType As String = String.Empty
 
+#Region "Form1"
+
+    ''' <summary>
+    ''' Load Form1 using base method
+    ''' </summary>
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Control.CheckForIllegalCrossThreadCalls = False
+    End Sub
+    
     ''' <summary>
     ''' Calls when this class (Form1) is closed
     ''' </summary>
@@ -34,11 +43,13 @@ Public Class Form1
             connector.Dispose()
         End If
     End Sub
+#End Region
+
 
 #Region "Menu Items"
 
     ''' <summary>
-    ''' "Connect" Button in UI's ribbon/strip-menu (along top).
+    ''' "Connect" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
     ''' <remarks>
     '''  <list type="bullet">
@@ -137,7 +148,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    ''' "Disconnect" Button in UI's ribbon/strip-menu (along top).
+    ''' "Disconnect" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
     Private Sub DisconnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisconnectToolStripMenuItem.Click
         If epos Is Nothing Then
@@ -188,11 +199,11 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    ''' "Remote Control" Button in UI's ribbon/strip-menu (along top).
+    ''' "Remote Control" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
     Private Sub RemoteModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoteModeToolStripMenuItem.Click
-        'Disable buttons
 
+        'Disable buttons
         ManualPanelState(False)
         RemotePanelState(True)
         OpenSerialPort()
@@ -203,7 +214,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    ''' "Local Control" Button in UI's ribbon/strip-menu (along top).
+    ''' "Local Control" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
     Private Sub LocalModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalModeToolStripMenuItem.Click
 
@@ -231,7 +242,7 @@ Public Class Form1
 
 #Region "File Functions"
     ''' <summary>
-    '''  
+    ''' words
     ''' </summary>
     Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
         ' Write line to file
@@ -384,7 +395,7 @@ Public Class Form1
 #Region "GUI Functions"
 
     ''' <summary>
-    '''  
+    ''' Enables/Disables all components of Manual Panel (left side) with supplied boolean
     ''' </summary>
     Private Sub ManualPanelState(Mystate As Boolean)
         PanSetHome.Enabled = Mystate
@@ -417,7 +428,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    ''' Enables/Disables all components of Remote Panel (right side) with supplied boolean
     ''' </summary>
     Private Sub RemotePanelState(Mystate As Boolean)
         PanRemoteMode.Enabled = Mystate
@@ -1668,28 +1679,6 @@ Public Class Form1
     End Sub
 #End Region
 
-    'Public Sub test()
-    '    If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
-
-    '    ToolStripStatusLabel4.Text = "Busy"
-
-    '    Select Case OperationMode
-    '        Case "Force"
-    '            Force()
-    '        Case "Distance"
-    '            Distance(RemoteParameter / 10)
-    '        Case "RampForce"
-    '            RampForce(RemoteParameter)
-    '        Case "RampDistance"
-    '            RampDistance(RemoteParameter / 10)
-    '    End Select
-
-    '    ToolStripStatusLabel4.Text = "zzIdle"
-    '    Timer1.Enabled = False
-    'End Sub
-
-
-
 
 #Region "Timers"
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
@@ -2203,13 +2192,29 @@ Public Class Form1
 
 #Region "Testing"
 
+    '' test class for Timer1_Tick() 
+    'Public Sub test()
+    '    If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
+
+    '    ToolStripStatusLabel4.Text = "Busy"
+
+    '    Select Case OperationMode
+    '        Case "Force"
+    '            Force()
+    '        Case "Distance"
+    '            Distance(RemoteParameter / 10)
+    '        Case "RampForce"
+    '            RampForce(RemoteParameter)
+    '        Case "RampDistance"
+    '            RampDistance(RemoteParameter / 10)
+    '    End Select
+
+    '    ToolStripStatusLabel4.Text = "zzIdle"
+    '    Timer1.Enabled = False
+    'End Sub
+
 
 
 #End Region
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Control.CheckForIllegalCrossThreadCalls = False
-
-    End Sub
-
 
 End Class
