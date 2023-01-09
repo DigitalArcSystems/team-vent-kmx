@@ -632,7 +632,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''  If OperationStatus is "Pause", wait 1 second
     ''' </summary>
     Public Sub CheckForPause()
         'Pause
@@ -753,17 +753,18 @@ Public Class Form1
 
                 ' Get current encoder count from Maxon
                 CurrentEncoder = epos.Operation.MotionInfo.GetPositionIs()
-                ' Active current 
+                ' Get Active electrical current (returns the current actual averaged value)
                 CCurrent = epos.Operation.MotionInfo.GetCurrentIsAveragedEx()
 
-                ' Get current encoder count
+                ' Get encoder count
                 CEncoder = CurrentEncoder
                 TSEC.Text = CurrentEncoder
 
-                ' Calculate current height from encoder counts
+                ' Calculate height from encoder counts
                 CPlateHeight = GetPlateHeight(CurrentEncoder)
                 TSDistance.Text = FormatNumber(CPlateHeight, 2) & " mm"
-
+                
+                ' Calculate current from encoder counts
                 LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CurrentEncoder)
 
                 LoadCurrentN = CalculateLoadAtCurrent(CurrentEncoder, CCurrent)
@@ -1362,7 +1363,6 @@ Public Class Form1
     Private Sub Force()
         Dim MyTargetForce As Decimal
 
-
         OperationStatus = "Start"
 
         CreateFile()
@@ -1389,11 +1389,10 @@ Public Class Form1
         GetCurrentData()
 
         Do
-
-            'Send write to file
+            'Write to file, but... do not send Serial Data?
             AddFileLine("Up", "No", OperationMode)
 
-            SendSerialData()
+            SendSerialData() ' but actually do send data...
 
             MoveToPosition(ForceUpStep)
             Wait(MotorCurrentReadPause)
@@ -1442,9 +1441,8 @@ Public Class Form1
         Wait(MotorCurrentReadPause)
         GetCurrentData()
 
-
         Do
-            'Send write to file
+            'Write to file, but... do not send Serial Data?
             AddFileLine("Up", "No", OperationMode)
 
             MoveToPosition(DistanceUpStep)
@@ -1500,6 +1498,7 @@ Public Class Form1
     ''' ( Parameter MyTargetForce is overwritten without being used )
     ''' </summary>
     Private Sub RampForce(MyTargetForce As Decimal)
+    
 
         OperationStatus = "Start"
 
@@ -1541,6 +1540,7 @@ Public Class Form1
             CheckMaxForce()
         Loop Until OperationStatus = "Stop" Or LoadCurrentN > MyTargetForce
 
+        'loop until "Stop Cycle" button is clicked
         Do
             OperationCycle()
             Wait(SeekCyclePause)
@@ -1558,6 +1558,7 @@ Public Class Form1
     ''' </summary>
     Private Sub RampDistance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
+
         OperationStatus = "Start"
 
         CreateFile()
@@ -1576,7 +1577,7 @@ Public Class Form1
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
         GetCurrentData()
-
+        
         Do
             'Send Serial Data and write to file
             AddFileLine("Up", "Yes", OperationMode)
@@ -1596,14 +1597,12 @@ Public Class Form1
             AddFileLine("Stay", "Yes", OperationMode)
             SendSerialData()
 
-
             newtarget = MyTargetDistance - GetPlateHeight(CEncoder)
 
             If newtarget > DistanceTolerance Then
 
                 MoveToPosition(DistanceTuneStep)
                 Wait(MotorCurrentReadPause)
-
             ElseIf newtarget < -DistanceTolerance Then
 
                 MoveToPosition(-DistanceStayStep)
@@ -1617,8 +1616,12 @@ Public Class Form1
                 MoveToPosition(DistanceStayStep)
                 Wait(MotorCurrentReadPause)
             End If
+
             GetCurrentData()
             Wait(DistanceRampPause)
+
+            '  Check Load
+            CheckMaxForce()  ' <- Graeme's adding, JIC, b/c this check seems important)
         Loop Until OperationStatus = "Stop"
 
         If InRemoteMode = False Then
