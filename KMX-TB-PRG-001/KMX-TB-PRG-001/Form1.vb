@@ -632,7 +632,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  If OperationStatus is "Pause", wait 1 second
+    '''  If OperationStatus is "Pause", wait in 1 second increments
     ''' </summary>
     Public Sub CheckForPause()
         'Pause
@@ -676,7 +676,6 @@ Public Class Form1
     ''' Rename to MoveToPositionREL, for clarity & searchability?
     '''</remarks>
     Private Sub MoveToPosition(EncoderNum As Integer)
-        ' Move to position relative
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
             OperationStatus = "Stop"
@@ -685,11 +684,11 @@ Public Class Form1
         
         Try
             Dim ppm As ProfilePositionMode
-            Dim TargetCount As Long
+            Dim TargetCount As Long ' Unused
 
             'get current position and add new encoder value
 
-            TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum
+            TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
 
             ppm = epos.Operation.ProfilePositionMode
             ppm.ActivateProfilePositionMode()
@@ -697,14 +696,12 @@ Public Class Form1
 
             epos.Operation.MotionInfo.WaitForTargetReached(10000)
         Catch eb As EposCmd.Net.DeviceException
-
             ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
         Catch eb As OverflowException
             MessageBox.Show(eb.Message)
         Catch eb As FormatException
             MessageBox.Show(eb.Message)
         Catch eb As Exception
-
             MessageBox.Show(eb.Message)
         End Try
     End Sub
@@ -717,28 +714,26 @@ Public Class Form1
             MessageBox.Show("Please connect to the device")
             OperationStatus = "Stop"
             Exit Sub
-        Else
-            Try
-                Dim ppm As ProfilePositionMode
-                '  Dim CurrentECCount As Long
-
-                ppm = epos.Operation.ProfilePositionMode
-                ppm.ActivateProfilePositionMode()
-
-                ppm.MoveToPosition(EncoderNum, True, True)
-
-                epos.Operation.MotionInfo.WaitForTargetReached(10000)
-
-            Catch eb As EposCmd.Net.DeviceException
-                ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
-            Catch eb As OverflowException
-                MessageBox.Show(eb.Message)
-            Catch eb As FormatException
-                MessageBox.Show(eb.Message)
-            Catch eb As Exception
-                MessageBox.Show(eb.Message)
-            End Try
         End If
+        
+        Try
+            Dim ppm As ProfilePositionMode
+            '  Dim CurrentECCount As Long
+
+            ppm = epos.Operation.ProfilePositionMode
+            ppm.ActivateProfilePositionMode()
+            ppm.MoveToPosition(EncoderNum, True, True)
+
+            epos.Operation.MotionInfo.WaitForTargetReached(10000)
+        Catch eb As EposCmd.Net.DeviceException
+            ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
+        Catch eb As OverflowException
+            MessageBox.Show(eb.Message)
+        Catch eb As FormatException
+            MessageBox.Show(eb.Message)
+        Catch eb As Exception
+            MessageBox.Show(eb.Message)
+        End Try
     End Sub
 
     ''' <summary>
@@ -749,7 +744,6 @@ Public Class Form1
             ' object doesn't exist yet
         Else
             Try
-
                 ' Get current encoder count from Maxon
                 CurrentEncoder = epos.Operation.MotionInfo.GetPositionIs()
                 ' Get Active electrical current (returns the current actual averaged value)
@@ -1181,6 +1175,7 @@ Public Class Form1
         Else
             'Current is not within tolerance
             If CCurrent < MyCurrentTarget Then
+                ' "Up" if current is less than target
 
                 'Send Serial Data and write to file
                 If OperationMode = "RampForce" Or OperationMode = "RampDistance" Then
@@ -1191,7 +1186,6 @@ Public Class Form1
                 Else
                     AddFileLine("Up", "No", OperationMode)
                 End If
-                ' "Up" if current is less than target
 
                 'update screen
                 LblMET.Text = SeekUpStep
@@ -1219,22 +1213,18 @@ Public Class Form1
                 ' Set target
                 MoveDownEncoderStep = LoadTarget * ForceStepCoeff
 
-                ' Update screen
+                'Update screen
 
                 LblDecision.Text = " Down Up "
 
                 ' Down move
                 If OperationStatus = "Stop" Then Exit Sub
                 LblMET.Text = "-" & MoveDownEncoderStep
-
-                'down move
                 MoveToPosition(-MoveDownEncoderStep) ' change add ramp force
 
                 ' Up move
                 If OperationStatus = "Stop" Then Exit Sub
                 LblMET.Text = (MoveDownEncoderStep - ForceDownStepNet)
-
-                'up move
                 MoveToPosition(MoveDownEncoderStep - ForceDownStepNet)
                 Wait(MotorCurrentReadPause)
                 GetCurrentData()
