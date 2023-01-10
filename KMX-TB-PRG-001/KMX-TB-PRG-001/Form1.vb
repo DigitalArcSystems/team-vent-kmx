@@ -681,33 +681,32 @@ Public Class Form1
             MessageBox.Show("Please connect to the device")
             OperationStatus = "Stop"
             Exit Sub
-        Else
-            Try
-                Dim ppm As ProfilePositionMode
-                Dim TargetCount As Long
-
-                'get current position and add new encoder value
-
-                TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum
-
-                ppm = epos.Operation.ProfilePositionMode
-                ppm.ActivateProfilePositionMode()
-                ppm.MoveToPosition(EncoderNum, 0, True)
-
-                epos.Operation.MotionInfo.WaitForTargetReached(10000)
-
-            Catch eb As EposCmd.Net.DeviceException
-
-                ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
-            Catch eb As OverflowException
-                MessageBox.Show(eb.Message)
-            Catch eb As FormatException
-                MessageBox.Show(eb.Message)
-            Catch eb As Exception
-
-                MessageBox.Show(eb.Message)
-            End Try
         End If
+        
+        Try
+            Dim ppm As ProfilePositionMode
+            Dim TargetCount As Long
+
+            'get current position and add new encoder value
+
+            TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum
+
+            ppm = epos.Operation.ProfilePositionMode
+            ppm.ActivateProfilePositionMode()
+            ppm.MoveToPosition(EncoderNum, 0, True)
+
+            epos.Operation.MotionInfo.WaitForTargetReached(10000)
+        Catch eb As EposCmd.Net.DeviceException
+
+            ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
+        Catch eb As OverflowException
+            MessageBox.Show(eb.Message)
+        Catch eb As FormatException
+            MessageBox.Show(eb.Message)
+        Catch eb As Exception
+
+            MessageBox.Show(eb.Message)
+        End Try
     End Sub
 
     ''' <summary>
@@ -797,6 +796,7 @@ Public Class Form1
                         SerialWord = SerialWord + 128
                 End Select
 
+                CheckForPause()
                 CheckForPause()
 
             Catch ex As EposCmd.Net.DeviceException
