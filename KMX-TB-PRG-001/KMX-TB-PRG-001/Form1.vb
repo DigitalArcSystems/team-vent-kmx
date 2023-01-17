@@ -845,7 +845,7 @@ Public Class Form1
 #Region "Button Click"
 
     ''' <summary>
-    ''' Event handler for Button clicks (same as all other Btn---_Click Subs in this region)
+    '''     Start Button - Event handler (makes decision based on which mode's checkbox is selected)
     ''' </summary>
     Private Sub BtnStartOC_Click(sender As Object, e As EventArgs) Handles BtnStartOC.Click
         ToolStripStatusLabel4.Text = "Busy"
@@ -892,40 +892,61 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     Pause Button - Event handler
+    ''' </summary>
     Private Sub BtnPauseOc_Click(sender As Object, e As EventArgs) Handles BtnPauseOc.Click
         OperationStatus = "Pause"
         ToolStripStatusLabel4.Text = "Pause"
     End Sub
 
+    ''' <summary>
+    '''     Resume Button - Event handler
+    ''' </summary>
     Private Sub BtnResumeOc_Click(sender As Object, e As EventArgs) Handles BtnResumeOc.Click
         OperationStatus = "Start"
         ToolStripStatusLabel4.Text = "Busy"
     End Sub
 
+    ''' <summary>
+    '''     Stop Button - Event handler
+    ''' </summary>
     Private Sub BtnStopOc_Click(sender As Object, e As EventArgs) Handles BtnStopOc.Click
         'Stop Operation cycle
         OperationStatus = "Stop"
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     Remote Stop Button - Event handler
+    ''' </summary>
     Private Sub BtnRemoteStop_Click(sender As Object, e As EventArgs) Handles BtnRemoteStop.Click
         'Stop Operation cycle
         OperationStatus = "Stop"
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     Close Button - Event handler
+    ''' </summary>
     Private Sub BtnClose_Click(sender As Object, e As EventArgs) Handles BtnClose.Click
         ToolStripStatusLabel4.Text = "Busy"
         CollapsePlates()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     Retract Button - Event handler
+    ''' </summary>
     Private Sub BtnRetractOc_Click(sender As Object, e As EventArgs) Handles BtnRetractOc.Click
         ToolStripStatusLabel4.Text = "Busy"
         CollapsePlates()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     AZC Button - Event handler
+    ''' </summary>
     Private Sub BtnAZC_Click(sender As Object, e As EventArgs) Handles BtnAZC.Click
         OperationStatus = "Stop"
         SetCurrent(0)
@@ -934,6 +955,10 @@ Public Class Form1
         CloseSerialPort()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
+    
+    ''' <summary>
+    '''      "Stop Plates" Button - Event handler
+    ''' </summary>
     Private Sub BtnStopPlatesOc_Click(sender As Object, e As EventArgs) Handles BtnStopPlatesOc.Click
         OperationStatus = "Stop"
         SetCurrent(0)
@@ -941,6 +966,10 @@ Public Class Form1
         GetCurrentData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
+    
+    ''' <summary>
+    '''     "Apply Current" Button - Event handler
+    ''' </summary>
     Private Sub BtnApplyCurrent_Click(sender As Object, e As EventArgs) Handles BtnApplyCurrent.Click
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -975,6 +1004,9 @@ Public Class Form1
         End If
     End Sub
 
+    ''' <summary>
+    '''      "Manual Jog Up (Encoder cts)" Button - Event handler
+    ''' </summary>
     Private Sub BtnMoveUP_Click(sender As Object, e As EventArgs) Handles BtnMoveUp.Click
         ToolStripStatusLabel4.Text = "Busy"
         MoveToPosition(NUDEncoderCounts.Value)
@@ -983,6 +1015,9 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     "Manual Jog Down (Encoder cts)" Button - Event handler
+    ''' </summary>
     Private Sub BtnMoveDown_Click(sender As Object, e As EventArgs) Handles BtnMoveDown.Click
         ToolStripStatusLabel4.Text = "Busy"
         MoveToPosition(-NUDEncoderCounts.Value)
@@ -991,7 +1026,9 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
-
+    ''' <summary>
+    '''     "Manual Jog Up (mm)" Button - Event handler
+    ''' </summary>
     Private Sub BtnMoveUpmm_Click(sender As Object, e As EventArgs) Handles BtnMoveUpmm.Click
         Dim NewHeight As Decimal
         Dim TargetEncoderNum As Decimal
@@ -1009,6 +1046,9 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     "Manual Jog Down (mm)" Button - Event handler
+    ''' </summary>
     Private Sub BtnMoveDownmm_Click(sender As Object, e As EventArgs) Handles BtnMoveDownmm.Click
         Dim NewHeight As Decimal
         Dim TargetEncoderNum As Decimal
@@ -1025,6 +1065,9 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     "Move to Distance" Button (mm) - Event handler
+    ''' </summary>
     Private Sub BtnMtD_Click(sender As Object, e As EventArgs) Handles BtnMtD.Click
         Dim TargetEncoderNum As Decimal
         ToolStripStatusLabel4.Text = "Busy"
@@ -1036,6 +1079,9 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
+    ''' <summary>
+    '''     "Move to Start Height" Button (cts) - Event handler
+    ''' </summary>
     Private Sub BtnMtEZ_Click(sender As Object, e As EventArgs) Handles BtnMtEZ.Click
         ToolStripStatusLabel4.Text = "Busy"
         Wait(500)
@@ -1054,62 +1100,80 @@ Public Class Form1
 
 
     ''' <summary>
-    '''  Handles Mouse direction controls (same for all in region)
+    '''     "Target Load" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
     Private Sub NUDTargetLoad_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetLoad.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetLoad.Increment = InputBox("Enter new step value", "Step Value", NUDTargetLoad.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "Target Distance" Field Up/Down Increment Buttons (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDTargetDistance_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetDistance.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetDistance.Increment = InputBox("Enter new step value", "Step Value", NUDTargetDistance.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "Distance" Field Up/Down Increment Buttons (Manual Jog) - Event handler
+    ''' </summary>
     Private Sub NUDDistance_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDDistance.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDDistance.Increment = InputBox("Enter new step value", "Step Value", NUDDistance.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "Homing Current" Field Up/Down Increment Buttons (Set Home) - Event handler
+    ''' </summary>
     Private Sub NUDHomingCurrent_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDHomingCurrent.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDHomingCurrent.Increment = InputBox("Enter new step value", "Step Value", NUDHomingCurrent.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "Millimeter" Field Up/Down Increment Buttons (Manual Jog) - Event handler
+    ''' </summary>
     Private Sub NUDMM_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMM.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMM.Increment = InputBox("Enter new step value", "Step Value", NUDMM.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "MotorCurrentTarget_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDMCTK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMCTK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMCTK.Increment = InputBox("Enter new step value", "Step Value", NUDMCTK.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "PlateHeight_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDPHK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDPHK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDPHK.Increment = InputBox("Enter new step value", "Step Value", NUDPHK.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "LoadAtCurrent_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDLACK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDLACK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDLACK.Increment = InputBox("Enter new step value", "Step Value", NUDLACK.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "EncoderCountsAbsolute_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDECAK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDECAK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDECAK.Increment = InputBox("Enter new step value", "Step Value", NUDECAK.Increment)
         End If
     End Sub
-
+    ''' <summary>
+    '''     "Target Load" Field number change (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDTargetLoad_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetLoad.ValueChanged
 
         LblTargetCurrent.Text = (Val(NUDTargetLoad.Text)) * GetTargetCurrentperLoadmA(CurrentEncoder)
@@ -1117,7 +1181,9 @@ Public Class Form1
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
         LblTargetLoadLB.Text = FormatNumber(NUDTargetLoad.Value * 0.2248, 2)
     End Sub
-
+    ''' <summary>
+    '''     "Target Distance" Field number change (Control Functions) - Event handler
+    ''' </summary>
     Private Sub NUDTargetDistance_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetDistance.ValueChanged
 
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
@@ -1622,9 +1688,10 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    ''' Safety check that verifies current load is within limit
+    '''     Safety check that verifies current load is within limit
     ''' </summary>
-    ''' <remarks> If load is above limit
+    ''' <remarks>
+    '''     If load is above limit
     ''' <list type="bullet">
     ''' <item><description> Output safety warning to terminal. </description></item>
     ''' <item><description> Move down to predefined position or by predefined amount. </description></item>
@@ -1642,7 +1709,7 @@ Public Class Form1
     End Sub
     
     ''' <summary>
-    ''' Moves to absolute 0
+    ''' Moves to absolute encoder position 0 (As calibrated with Homing)
     ''' </summary>
     Public Sub MoveToHomeZero()
         OperationStatus = "Start"
@@ -1674,6 +1741,12 @@ Public Class Form1
 
 
 #Region "Timers"
+    ''' <summary>
+    '''     State machine for 4 Operation Mode. 
+    ''' </summary>
+    ''' <remarks>
+    '''     Updates UI with Busy/Idle state.
+    ''' </remarks>
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
 
         If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
@@ -1694,6 +1767,12 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
         Timer1.Enabled = False
     End Sub
+    ''' <summary>
+    '''     State machine for Collapsing Plastes.
+    ''' </summary>
+    ''' <remarks>
+    '''     Updates UI with Busy/Idle state.
+    ''' </remarks>
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         If OperationStatus = "Start" Then Exit Sub
         ToolStripStatusLabel4.Text = "Busy"
@@ -1701,6 +1780,12 @@ Public Class Form1
         Timer2.Enabled = False
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
+    ''' <summary>
+    '''     State machine for moving plates to Home.
+    ''' </summary>
+    ''' <remarks>
+    '''     Updates UI with Busy/Idle state.
+    ''' </remarks>
     Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles Timer3.Tick
         If OperationStatus = "Start" Then Exit Sub
         ToolStripStatusLabel4.Text = "Busy"
