@@ -309,7 +309,7 @@ Public Class Form1
             file.WriteLine("MotorDeceleration = " & MotorDeceleration)
             file.WriteLine("HomingCurrent = " & HomingCurrent)
             file.WriteLine("MotorCurrentReadPause = " & MotorCurrentReadPause)
-            file.WriteLine("ClosingCurrent = " & ClosingCurrent)
+            file.WriteLine("ClosingCurrent = " & ClosingCurrent)                 ' -150 mA
             file.WriteLine("DistanceMax = " & DistanceMax)
             file.WriteLine("DistanceMin = " & DistanceMin)
             file.WriteLine("HomeHeight = " & HomeHeight)
@@ -765,7 +765,7 @@ Public Class Form1
                 TSLoadN.Text = Math.Round(LoadCurrentN) & " N"
                 TSLoadLB.Text = FormatNumber(Math.Round(LoadCurrentN) * 0.2248, 2) & " lb"
 
-                TSAC.Text = CCurrent & " mA"
+                TSAC.Text = CCurrent & " mA" ' Actual Current - Toolstrip
 
                 SerialLoad = Math.Round(LoadCurrentN).ToString("0000")
                 SerialHeight = ((GetPlateHeight(CEncoder) * 10).ToString("0000"))
@@ -936,7 +936,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''     Retract Button - Event handler
+    '''     "Retract Plates" Button (Control Functions) - Event handler
     ''' </summary>
     Private Sub BtnRetractOc_Click(sender As Object, e As EventArgs) Handles BtnRetractOc.Click
         ToolStripStatusLabel4.Text = "Busy"
@@ -945,7 +945,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''     AZC Button - Event handler
+    '''     "Stop" Button (Set Home) - Event handler 
     ''' </summary>
     Private Sub BtnAZC_Click(sender As Object, e As EventArgs) Handles BtnAZC.Click
         OperationStatus = "Stop"
@@ -957,8 +957,11 @@ Public Class Form1
     End Sub
     
     ''' <summary>
-    '''      "Stop Plates" Button - Event handler
+    '''      "Power Off" Button (Control Functions) - Event handler
     ''' </summary>
+    ''' <remarks>
+    '''     actually Halt function
+    ''' </remarks>
     Private Sub BtnStopPlatesOc_Click(sender As Object, e As EventArgs) Handles BtnStopPlatesOc.Click
         OperationStatus = "Stop"
         SetCurrent(0)
@@ -1302,7 +1305,7 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''     Closes plates using ClosingCurrent(-150 mA)
     ''' </summary>
     Public Sub CollapsePlates()
         If epos Is Nothing Then
@@ -1325,8 +1328,12 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''     [FACTORY MODE] "Load Hold" Operation
     ''' </summary>
+    ''' <remarks>
+    '''     - exactly the same as Load(), but checks CCurrent instead of LoadCurrentN
+    '''     - not currently used by any modes, only internal use
+    '''</remarks>
     Public Sub LoadOperation()
         Dim MyTargetForce As Decimal
 

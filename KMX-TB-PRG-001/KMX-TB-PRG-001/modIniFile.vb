@@ -104,10 +104,10 @@ Module modIniFile
     Public RecordDataFile As String
     Public ManRecordDataFile As String
     Public CVelocity As Integer
-    Public CEncoder As Long
+    Public CEncoder As Long                     ' Encoder Count (Current Encoder Count)
     Public CPlateHeight As Decimal
-    Public CCurrent As Decimal
-    Public OperationStatus As String
+    Public CCurrent As Decimal                  ' Actual Current (Current Current)
+    Public OperationStatus As String            
     Public CurrentEncoder As Long
     Public Mytarget As Integer
     Public RunSeek As Boolean = False
@@ -124,7 +124,7 @@ Module modIniFile
     Public OperationMode As String
     Public RemoteParameter As String
     Public MoveDownEncoderStep As Integer
-    Public HomeStatus As Integer = 0 ' 2 - in process, 1 = is_Homed , 0 Not_Home
+    Public HomeStatus As Integer = 0             ' 2 - in process, 1 = is_Homed , 0 Not_Home
     Public ErrorStatus As Integer = 0
 
 
