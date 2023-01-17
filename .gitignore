@@ -1,3 +1,6 @@
 .idea
 .vs
 Documents/General
+*.cache
+obj
+*.htm
