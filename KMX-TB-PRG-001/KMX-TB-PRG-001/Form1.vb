@@ -242,7 +242,7 @@ Public Class Form1
 
 #Region "File Functions"
     ''' <summary>
-    ''' words
+    '''     Adds a line to local Log file, with timestamp, plate height (mm), Load (N), Current (mA), Encoder Counts (cts), target Current (mA), target Current Tolerance (mA), Movement Direction to attempt, whether this will go to serial stream, & Mode of Operation.
     ''' </summary>
     Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
         ' Write line to file
@@ -259,8 +259,24 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''     Sends info over serial:
     ''' </summary>
+    ''' <remarks>
+    ''' <list type="bullet">
+    '''     <item><description>
+    '''         Timestamp
+    '''     </description></item>
+    '''     <item><description>
+    '''         Serial Word (Flags)
+    '''     </description></item>
+    '''     <item><description>
+    '''         Plate Height
+    '''     </description></item>
+    '''     <item><description>
+    '''         Load (min of 0??)
+    '''     </description></item>
+    ''' </list>
+    ''' </remarks>
     Public Sub SendSerialData()
         ' Send data to serial port
 
