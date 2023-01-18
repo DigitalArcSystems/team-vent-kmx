@@ -45,7 +45,6 @@ Public Class Form1
     End Sub
 #End Region
 
-
 #Region "Menu Items"
 
     ''' <summary>
@@ -242,7 +241,20 @@ Public Class Form1
 
 #Region "File Functions"
     ''' <summary>
-    '''     Adds a line to local Log file, with timestamp, plate height (mm), Load (N), Current (mA), Encoder Counts (cts), target Current (mA), target Current Tolerance (mA), Movement Direction to attempt, whether this will go to serial stream, & Mode of Operation.
+    '''     Adds a line to local Log file, with:
+    ''' 
+    ''' <list type="bullet">
+    '''     <item>  Timestamp                       </item>
+    '''     <item>  Plate Height (mm),              </item>
+    '''     <item>  Load (N),                       </item>
+    '''     <item>  Current (mA),                   </item>
+    '''     <item>  Encoder Counts (cts)            </item>
+    '''     <item>  target Current (mA),            </item>
+    '''     <item>  target Current Tolerance (mA),  </item>
+    '''     <item>  Movement Direction (string)     </item>
+    '''     <item>  sending to serial stream (bool) </item>
+    '''     <item>  Mode of Operation (string)      </item>
+    ''' </list>
     ''' </summary>
     Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
         ' Write line to file
@@ -260,23 +272,14 @@ Public Class Form1
 
     ''' <summary>
     '''     Sends info over serial:
-    ''' </summary>
-    ''' <remarks>
+    ''' 
     ''' <list type="bullet">
-    '''     <item><description>
-    '''         Timestamp
-    '''     </description></item>
-    '''     <item><description>
-    '''         Serial Word (Flags)
-    '''     </description></item>
-    '''     <item><description>
-    '''         Plate Height
-    '''     </description></item>
-    '''     <item><description>
-    '''         Load (min of 0??)
-    '''     </description></item>
+    '''     <item>  Timestamp             </item>
+    '''     <item>  Serial Word (Flags)   </item>
+    '''     <item>  Plate Height          </item>
+    '''     <item>  Load (min of 0??)     </item>
     ''' </list>
-    ''' </remarks>
+    ''' </summary>
     Public Sub SendSerialData()
         ' Send data to serial port
 
@@ -408,7 +411,6 @@ Public Class Form1
 #End Region
 
 #Region "GUI Functions"
-
     ''' <summary>
     ''' Enables/Disables all components of Manual Panel (left side) with supplied boolean
     ''' </summary>
@@ -550,11 +552,7 @@ Public Class Form1
 
 #End Region
 
-
-
-
 #Region "Formulas"
-
     ''' <summary>
     '''     Calculates required "Motor Current per Load" based on motor's present Encoder Count.
     '''     (Motor Current required to apply a given Force changes based on plate's height.) 
@@ -580,7 +578,7 @@ Public Class Form1
     End Function
 
     ''' <summary>
-    '''  
+    '''     Calculates Plate Height from Encoder Count
     ''' </summary>
     Public Function GetPlateHeight(EncoderPosition As Decimal) As Decimal
         'FormulaHeightVsEncoder
@@ -595,7 +593,7 @@ Public Class Form1
     End Function
 
     ''' <summary>
-    '''  
+    '''     Calculates Encoder Count from Plate Height (distraction)
     ''' </summary>
     Public Function GetEncoderPosition(PlateHeight As Decimal) As Decimal
         'FormulaEncoderVsHeight
@@ -610,7 +608,7 @@ Public Class Form1
     End Function
 
     ''' <summary>
-    '''  
+    '''     Calculates Force of Load on plates using Motor Current and Encoder Counts
     ''' </summary>
     Public Function CalculateLoadAtCurrent(EncoderCounts As Decimal, MyCurrent As Decimal) As Decimal
         'FormulaLoadPerCurrentVsEncoderCounts
@@ -623,13 +621,9 @@ Public Class Form1
 
 #End Region
 
-
-
-
 #Region "Commands For Maxon"
-
     ''' <summary>
-    '''  
+    '''     Set Motor Controller to Current Mode, and control with given Current
     ''' </summary>
     Public Sub SetCurrent(ICurrent As Integer)
         'Set current
@@ -666,9 +660,10 @@ Public Class Form1
         Loop
     End Sub
 
-    ''' <summary>
-    '''  
-    ''' </summary>
+    '''<summary>
+    '''     Set Motor Controller to Profile Positiion Mode,
+    '''     and set its parameters for velocity, acceleration, and deceleration
+    '''</summary>
     Private Sub SetMoveParameter()
         'Set move parameters
         If epos Is Nothing Then
@@ -698,8 +693,8 @@ Public Class Form1
     '''  Moves to relative position by amount specified (as opposed to absolute postion via MoveToPositionABS)
     ''' </summary>
     ''' <remarks>
-    ''' Rename to MoveToPositionREL, for clarity & searchability?
-    '''</remarks>
+    ''' Combine with ABS, add bool param for absolute
+    ''' </remarks>
     Private Sub MoveToPosition(EncoderNum As Integer)
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -733,6 +728,9 @@ Public Class Form1
     ''' <summary>
     '''  Move to absolute position on encoder (as opposed to relative postion via MoveToPosition)
     ''' </summary>
+    ''' <remarks>
+    ''' Combine into other, add bool param for absolute
+    '''</remarks>
     Private Sub MoveToPositionABS(EncoderNum As Integer)
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -761,7 +759,11 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''     Gets values for Encoder and Current, 
+    '''     Calculates Height and Load, 
+    '''     Sets SerialWord flags,
+    '''     Stores in respective public vars, 
+    '''     and Updates local gui
     ''' </summary>
     Private Sub GetCurrentData()
         If epos Is Nothing Then
@@ -774,7 +776,7 @@ Public Class Form1
                 CCurrent = epos.Operation.MotionInfo.GetCurrentIsAveragedEx()
 
                 ' Get encoder count
-                CEncoder = CurrentEncoder
+                CEncoder = CurrentEncoder               ' REDUNDANT (?)
                 TSEC.Text = CurrentEncoder
 
                 ' Calculate height from encoder counts
@@ -784,7 +786,7 @@ Public Class Form1
                 ' Calculate current from encoder counts
                 LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CurrentEncoder)
 
-                LoadCurrentN = CalculateLoadAtCurrent(CurrentEncoder, CCurrent)
+                LoadCurrentN = CalculateLoadAtCurrent(CurrentEncoder, CCurrent)                                         ' Load calculated from Current
 
                 TSLoadN.Text = Math.Round(LoadCurrentN) & " N"
                 TSLoadLB.Text = FormatNumber(Math.Round(LoadCurrentN) * 0.2248, 2) & " lb"
@@ -828,7 +830,8 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''     Sets epos to Homing Mode,
+    '''     Defines current position as Home
     ''' </summary>
     Private Sub BtnSetZero_Click(sender As Object, e As EventArgs) Handles BtnSetZero.Click
         If epos Is Nothing Then
@@ -863,11 +866,7 @@ Public Class Form1
 
 #End Region
 
-
-
-
 #Region "Button Click"
-
     ''' <summary>
     '''     Start Button - Event handler (makes decision based on which mode's checkbox is selected)
     ''' </summary>
@@ -1107,8 +1106,11 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''     "Move to Start Height" Button (cts) - Event handler
+    '''     "Move to Start Height" Button (cts) - Event handler  
     ''' </summary>
+    ''' <remarks>
+    '''     AKA: "Move to Encoder Zero"
+    ''' </remarks>
     Private Sub BtnMtEZ_Click(sender As Object, e As EventArgs) Handles BtnMtEZ.Click
         ToolStripStatusLabel4.Text = "Busy"
         Wait(500)
@@ -1120,12 +1122,7 @@ Public Class Form1
 
 #End Region
 
-
-
-
 #Region "Arrow Buttons"
-
-
     ''' <summary>
     '''     "Target Load" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
@@ -1218,11 +1215,7 @@ Public Class Form1
 
 #End Region
 
-
-
-
 #Region "Operations"
-
     ''' <summary>
     '''  
     ''' </summary>
@@ -1355,7 +1348,7 @@ Public Class Form1
     '''     [FACTORY MODE] "Load Hold" Operation
     ''' </summary>
     ''' <remarks>
-    '''     - exactly the same as Load(), but compares MyTargetForce to CCurrent (instantaneous Current) instead of LoadCurrentN (Force calc'd from Current)
+    '''     - exactly the same as Load(), but compares MyTargetForce to CCurrent (instantaneous Current) instead of LoadCurrentN (Load Force calc'd from Current)
     '''     - not currently used by any modes, only internal use
     '''</remarks>
     Public Sub LoadOperation()
@@ -1724,9 +1717,9 @@ Public Class Form1
     ''' <remarks>
     '''     If load is above limit
     ''' <list type="bullet">
-    ''' <item><description> Output safety warning to terminal. </description></item>
-    ''' <item><description> Move down to predefined position or by predefined amount. </description></item>
-    ''' <item><description> Temp Pause reading Motor current, either for current protection or avoid bad reading feedback. </description></item>
+    '''     <item>      Output safety warning to terminal.                          </item>
+    '''     <item>      Move down to predefined position or by predefined amount.   </item>
+    '''     <item>      Temp Pause reading Motor current, either for current protection or avoid bad reading feedback. </item>
     ''' </list>
     ''' </remarks>
     Private Sub CheckMaxForce()
@@ -1740,7 +1733,7 @@ Public Class Form1
     End Sub
     
     ''' <summary>
-    ''' Moves to absolute encoder position 0 (As calibrated with Homing)
+    '''     Moves to absolute encoder position 0 (As calibrated with Homing)
     ''' </summary>
     Public Sub MoveToHomeZero()
         OperationStatus = "Start"
@@ -1752,8 +1745,11 @@ Public Class Form1
     End Sub
     
     ''' <summary>
-    ''' Moves to height were Encoder started when calling <c>OpenToolStripMenuItem_Click</c>
+    '''     (Inteneded to) Moves to "Start Height" set in Manual Jon menu
     ''' </summary>
+    ''' <remarks>
+    '''     (Not actually called by "Move To Start Height" button <c>BtnMtEZ_Click</c> )
+    ''' </remarks>
     Public Sub MoveToStartHeight()
         OperationStatus = "Start"
         MoveToPositionABS(NUDSHeight.Value)
@@ -1762,6 +1758,12 @@ Public Class Form1
         OperationStatus = "Stop"
     End Sub
 
+    ''' <summary>
+    '''     (Inteneded to) Move to "Distance" set in Manual Jog menu.
+    ''' </summary>
+    ''' <remarks>
+    '''     (Not actually called by "Move To Distance" button <c>BtnMtD_Click</c> )
+    ''' </remarks>
     Public Sub RemoteDistance()
 
         MoveToPositionABS(GetEncoderPosition(NUDDistance.Value))
@@ -1770,10 +1772,9 @@ Public Class Form1
     End Sub
 #End Region
 
-
 #Region "Timers"
     ''' <summary>
-    '''     State machine for 4 Operation Mode. 
+    '''     State machine:  4 Operation Modes 
     ''' </summary>
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
@@ -1798,8 +1799,9 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
         Timer1.Enabled = False
     End Sub
+    
     ''' <summary>
-    '''     State machine for Collapsing Plastes.
+    '''     State machine:  Collapse Plastes
     ''' </summary>
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
@@ -1811,12 +1813,14 @@ Public Class Form1
         Timer2.Enabled = False
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
+    
     ''' <summary>
-    '''     State machine for moving plates to Home.
+    '''     State machine:  Move Home
     ''' </summary>
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
     ''' </remarks>
+
     Private Sub Timer3_Tick(sender As Object, e As EventArgs) Handles Timer3.Tick
         If OperationStatus = "Start" Then Exit Sub
         ToolStripStatusLabel4.Text = "Busy"
@@ -1828,12 +1832,12 @@ Public Class Form1
 #End Region
 
 #Region "Serial"
-
-    ''' enumeration to hold our message types
+    ' enumeration to hold our message types
     Public Enum TransmissionType
         Text
         Hex
     End Enum
+    
     Public Enum MessageType
         Incoming
         Outgoing
@@ -2086,7 +2090,6 @@ Public Class Form1
 
             Case "022" '022 ModeRampDistance
 
-
                 Me.Invoke(Sub()
                               OperationMode = "RampDistance"
 
@@ -2175,8 +2178,6 @@ Public Class Form1
                 ' bad command
                 WriteData(">50196<")
         End Select
-
-
     End Sub
 
     Public Sub WriteData(ByVal msg As String)
@@ -2300,9 +2301,8 @@ Public Class Form1
 #End Region
 
 #Region "Testing"
-
     '' test class for Timer1_Tick() 
-    'Public Sub test()
+    Public Sub test()
     '    If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
 
     '    ToolStripStatusLabel4.Text = "Busy"
@@ -2320,7 +2320,7 @@ Public Class Form1
 
     '    ToolStripStatusLabel4.Text = "zzIdle"
     '    Timer1.Enabled = False
-    'End Sub
+    End Sub
 
 
 
