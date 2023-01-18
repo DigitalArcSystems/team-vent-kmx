@@ -77,6 +77,7 @@
             <DependentUpon>Application.myapp</DependentUpon>
         </Compile>
         <Compile Include="Vb code.vb" />
+        <Compile Include="_INI-SJX-002-Newtons-50_example.vb" />
     </ItemGroup>
     <ItemGroup>
         <None Include="My Project\Application.myapp">
@@ -89,6 +90,7 @@
       <Content Include="lib\EposCmd.dll" />
       <Content Include="lib\EposCmd.Net.dll" />
       <Content Include="lib\System.Net.Http.dll" />
+      <Content Include="_INI-SJX-002-Newtons-50_example.ini" />
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Include="Form1.resx">

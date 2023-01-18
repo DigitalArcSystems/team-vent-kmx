@@ -124,7 +124,7 @@ Public Class Form1
                 NUDDistance.Maximum = DistanceMax
                 NUDDistance.Minimum = DistanceMin
 
-                NUDMCTK.Value = MotorCurrentTarget_K
+                NUDMCTK.Value = MotorCurrentTarget_K            ' Target Motor Current constant
                 NUDPHK.Value = PlateHeight_K
                 NUDLACK.Value = LoadAtCurrent_K
                 NUDECAK.Value = EncoderCountsAbsolute_K
@@ -319,41 +319,41 @@ Public Class Form1
             file = My.Computer.FileSystem.OpenTextFileWriter(RecordDataFile, True)
             'Write current setting
             file.WriteLine(RecordDataFile)
-            file.WriteLine("     Motor Setting  ")
-            file.WriteLine("MotorVelocity = " & MotorVelocity)
-            file.WriteLine("MotorAcceleration = " & MotorAcceleration)
-            file.WriteLine("MotorDeceleration = " & MotorDeceleration)
-            file.WriteLine("HomingCurrent = " & HomingCurrent)
-            file.WriteLine("MotorCurrentReadPause = " & MotorCurrentReadPause)
-            file.WriteLine("ClosingCurrent = " & ClosingCurrent)                 ' -150 mA
-            file.WriteLine("DistanceMax = " & DistanceMax)
-            file.WriteLine("DistanceMin = " & DistanceMin)
-            file.WriteLine("HomeHeight = " & HomeHeight)
-            file.WriteLine("LoadMax = " & LoadMax)
-            file.WriteLine("EncoderCountMax = " & EncoderCountMax)
-            file.WriteLine("EncoderCountMin = " & EncoderCountMin)
-            file.WriteLine("MotorCurrentMax = " & MotorCurrentMax)
-            file.WriteLine("StartHeightEncoder = " & StartHeightEncoder)
+            file.WriteLine("     Motor Setting  ")                                  '   MOTOR SETTINGS
+            file.WriteLine("MotorVelocity = " & MotorVelocity)                          ' 7500 rpm
+            file.WriteLine("MotorAcceleration = " & MotorAcceleration)                  ' 50000 rpm/s
+            file.WriteLine("MotorDeceleration = " & MotorDeceleration)                  ' 50000 rpm/s
+            file.WriteLine("HomingCurrent = " & HomingCurrent)                          ' 325 mA.
+            file.WriteLine("MotorCurrentReadPause = " & MotorCurrentReadPause)          ' 50 ms
+            file.WriteLine("ClosingCurrent = " & ClosingCurrent)                        ' -150 mA
+            file.WriteLine("DistanceMax = " & DistanceMax)                              ' 18 mm
+            file.WriteLine("DistanceMin = " & DistanceMin)                              ' 9 mm
+            file.WriteLine("HomeHeight = " & HomeHeight)                                ' 9 mm
+            file.WriteLine("LoadMax = " & LoadMax)                                      ' 300 N (60lb) ; was 267 N (60lb)
+            file.WriteLine("EncoderCountMax = " & EncoderCountMax)                      ' 275000 cts                        (was written as mA?)
+            file.WriteLine("EncoderCountMin = " & EncoderCountMin)                      ' -150000 cts
+            file.WriteLine("MotorCurrentMax = " & MotorCurrentMax)                      ' 700  mA
+            file.WriteLine("StartHeightEncoder = " & StartHeightEncoder)                ' 50000 cts
             file.WriteLine("      ")
-            file.WriteLine("     FormulaCurrentPerLoadVsEncoderCounts  ")
-            file.WriteLine("MotorCurrentTarget_a = " & MotorCurrentTarget_a)
+            file.WriteLine("     FormulaCurrentPerLoadVsEncoderCounts  ")               ' Target Current per Load      <--      Encoder Counts
+            file.WriteLine("MotorCurrentTarget_a = " & MotorCurrentTarget_a)            ' MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
             file.WriteLine("MotorCurrentTarget_b1 = " & MotorCurrentTarget_b1)
             file.WriteLine("MotorCurrentTarget_b2 = " & MotorCurrentTarget_b2)
             file.WriteLine("MotorCurrentTarget_b3 = " & MotorCurrentTarget_b3)
-            '  file.WriteLine("MotorCurrentTarget_b4 = " & MotorCurrentTarget_b4)
+            'file.WriteLine("MotorCurrentTarget_b4 = " & MotorCurrentTarget_b4)
             file.WriteLine("MotorCurrentTarget_K = " & NUDMCTK.Value)
-            file.WriteLine("      ")
-            file.WriteLine("     FormulaLoadPerCurrentVsEncoderCounts  ")
-            file.WriteLine("LoadAtCurrent_a = " & LoadAtCurrent_a)
+            file.WriteLine("      ")                                                    
+            file.WriteLine("     FormulaLoadPerCurrentVsEncoderCounts  ")               ' Load      <--      Current
+            file.WriteLine("LoadAtCurrent_a = " & LoadAtCurrent_a)                      ' LoadAtCurrent = MeasuredCurrent * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
             file.WriteLine("LoadAtCurrent_b1 = " & LoadAtCurrent_b1)
             file.WriteLine("LoadAtCurrent_b2 = " & LoadAtCurrent_b2)
             file.WriteLine("LoadAtCurrent_b3 = " & LoadAtCurrent_b3)
             '   file.WriteLine("LoadAtCurrent_b4 = " & LoadAtCurrent_b4)
             file.WriteLine("LoadAtCurrent_K = " & NUDLACK.Value)
-            file.WriteLine("      ")
-            file.WriteLine("     FormulaHeightVsEncoder  ")
-            file.WriteLine("PlateHeight_a = " & PlateHeight_a)
-            file.WriteLine("PlateHeight_b1 = " & PlateHeight_b1)
+            file.WriteLine("      ")                                                    
+            file.WriteLine("     FormulaHeightVsEncoder  ")                             ' Height    <--     Encoder
+            file.WriteLine("PlateHeight_a = " & PlateHeight_a)                          ' PlateHeight = b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a_shift
+            file.WriteLine("PlateHeight_b1 = " & PlateHeight_b1)                        '       a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
             file.WriteLine("PlateHeight_b2 = " & PlateHeight_b2)
             file.WriteLine("PlateHeight_b3 = " & PlateHeight_b3)
             '  file.WriteLine("PlateHeight_b4 = " & PlateHeight_b4)
@@ -361,11 +361,11 @@ Public Class Form1
             file.WriteLine("PlateHeight_base = " & PlateHeight_base)
             file.WriteLine("PlateHeight_shift = " & PlateHeight_shift)
             file.WriteLine("PlateHeight_K = " & NUDPHK.Value)
-            file.WriteLine("      ")
-            file.WriteLine("     FormulaEncoderVsHeight  ")
-            file.WriteLine("EncoderCountsAbsolute_a = " & EncoderCountsAbsolute_a)
-            file.WriteLine("EncoderCountsAbsolute_b1 = " & EncoderCountsAbsolute_b1)
-            file.WriteLine("EncoderCountsAbsolute_b2 = " & EncoderCountsAbsolute_b2)
+            file.WriteLine("      ")                                                    
+            file.WriteLine("     FormulaEncoderVsHeight  ")                             ' Encoder   <---    Height
+            file.WriteLine("EncoderCountsAbsolute_a = " & EncoderCountsAbsolute_a)      ' EncoderCountsAbsolute = b3(Height^3) + b2(Height^2)+ b1(Height) + a_off
+            file.WriteLine("EncoderCountsAbsolute_b1 = " & EncoderCountsAbsolute_b1)    '       a_off = intercept + ((SetLoad - BaseLoad) x Shift)) 
+            file.WriteLine("EncoderCountsAbsolute_b2 = " & EncoderCountsAbsolute_b2)    '       same equation. but different values as:         a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
             file.WriteLine("EncoderCountsAbsolute_b3 = " & EncoderCountsAbsolute_b3)
             '  file.WriteLine("EncoderCountsAbsolute_b4 = " & EncoderCountsAbsolute_b4)
             file.WriteLine("EncoderCountsAbsolute_intercept = " & EncoderCountsAbsolute_intercept)
@@ -373,29 +373,28 @@ Public Class Form1
             file.WriteLine("EncoderCountsAbsolute_shift = " & EncoderCountsAbsolute_shift)
             file.WriteLine("EncoderCountsAbsolute_K = " & NUDECAK.Value)
             file.WriteLine("      ")
-            file.WriteLine("     Operation  ")
-            file.WriteLine("SeekUpStep = " & SeekUpStep)
-            file.WriteLine("ForceDownStepNet = " & ForceDownStepNet)
-            file.WriteLine("LoadTarget = " & LoadTarget)
-            file.WriteLine("ForceStepCoeff = " & ForceStepCoeff)
-            file.WriteLine("LoadTolerance = " & LoadTolerance)
-            file.WriteLine("LoadApproachForce = " & LoadApproachForce)
-            file.WriteLine("LoadApproachForceRamp = " & LoadApproachForceRamp)
-            file.WriteLine("SeekCyclePause = " & SeekCyclePause)
-            file.WriteLine("ForceRampPause = " & ForceRampPause)
-            file.WriteLine("ForceRampStep = " & ForceRampStep)
-            file.WriteLine("ForceUpStep = " & ForceUpStep)
-            file.WriteLine("ForceUpPause = " & ForceUpPause)
-            file.WriteLine("DistanceUpStep = " & DistanceUpStep)
-            file.WriteLine("DistancePause = " & DistancePause)
-            file.WriteLine("DistanceRampStep = " & DistanceRampStep)
-            file.WriteLine("DistanceRampPause = " & DistanceRampPause)
-            file.WriteLine("LoadMaxSafetyDrop = " & LoadMaxSafetyDrop)
-            file.WriteLine("DistanceStayStep = " & DistanceStayStep)
-            file.WriteLine("LoadMaxSafetyDrop = " & LoadMaxSafetyDrop)
-            file.WriteLine("FirstMoveStep = " & FirstMoveStep)
-            file.WriteLine("DistanceTuneStep = " & DistanceTuneStep)
-            file.WriteLine("DistanceTolerance = " & DistanceTolerance)
+            file.WriteLine("     Operation  ")                                      '   OPERATION
+            file.WriteLine("ForceStepCoeff        = " & ForceStepCoeff)                 ' 180 cts/N             Value for STAY down&up move. Modes Seek
+            file.WriteLine("LoadTarget            = " & LoadTarget)                     ' 180 N (was 44.48 N)   defines a starting target load when the program is initiated
+            file.WriteLine("LoadTolerance         = " & LoadTolerance)                  ' 3 N (was 10 N)        Value is multiplied by the look up equation to define what the motor current tolerance band should be ("User-set"??) 
+            file.WriteLine("LoadApproachForce     = " & LoadApproachForce)              ' 80 % of N             [Force Mode]     plates continue only upwards in increments of ForceUpStep   until this % of Target load is reached
+            file.WriteLine("LoadApproachForceRamp = " & LoadApproachForceRamp)          ' 80 % of N             [Ramped Force M] plates continue only upwards in increments of ForceRampStep until this % of Target load is reached
+            file.WriteLine("SeekCyclePause    = " & SeekCyclePause)                     ' 1  ms
+            file.WriteLine("ForceUpPause      = " & ForceUpPause)                       ' 1  ms
+            file.WriteLine("ForceRampPause    = " & ForceRampPause)                     ' 20 ms
+            file.WriteLine("DistancePause     = " & DistancePause)                      ' XX ms                 [ missing from example .ini ]
+            file.WriteLine("DistanceRampPause = " & DistanceRampPause)                  ' 25 ms
+            file.WriteLine("SeekUpStep        = " & SeekUpStep)                         ' 2000   cts            Move UP when Target Current < Tolerance.                                Modes:  Seek
+            file.WriteLine("ForceDownStepNet  = " & ForceDownStepNet)                   ' 4000   cts            Net DOWN move.                                                          Modes:  Force, Ramp-Force, Seek
+            file.WriteLine("ForceUpStep       = " & ForceUpStep)                        ' 15000  cts
+            file.WriteLine("ForceRampStep     = " & ForceRampStep)                      ' 2000   cts            Move UP when Target Current < Tolerance. Tune the Pause for slowness.   Modes:  Ramp-Force
+            file.WriteLine("DistanceUpStep    = " & DistanceUpStep)                     ' 10000  cts
+            file.WriteLine("DistanceRampStep  = " & DistanceRampStep)                   ' 10000  cts
+            file.WriteLine("DistanceStayStep  = " & DistanceStayStep)                   ' 1000   cts (was 15000)
+            file.WriteLine("LoadMaxSafetyDrop = " & LoadMaxSafetyDrop)                  ' 100000 cts            Every time this param is used, check to not go below EncoderCountMIN
+            file.WriteLine("FirstMoveStep     = " & FirstMoveStep)                      ' 25000  cts            Encoder counts move DOWN then UP at the very begining of any mode of operation
+            file.WriteLine("DistanceTuneStep  = " & DistanceTuneStep)                   ' 1000   cts (was 5000)
+            file.WriteLine("DistanceTolerance = " & DistanceTolerance)                  ' 0.2 mm
             file.WriteLine("      ")
             'file.WriteLine("xxxx = " & xxxx)
 
@@ -557,8 +556,18 @@ Public Class Form1
 #Region "Formulas"
 
     ''' <summary>
-    '''  
+    '''     Calculates required "Motor Current per Load" based on motor's present Encoder Count.
+    '''     (Motor Current required to apply a given Force changes based on plate's height.) 
     ''' </summary>
+    ''' <param name="EncoderVal">
+    '''     Encoder counts (cts) at present
+    ''' </param>
+    ''' <returns>
+    '''     Current per Load (mA/N)
+    ''' </returns>
+    ''' <remarks>
+    '''     MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
+    ''' </remarks>
     Public Function GetTargetCurrentperLoadmA(EncoderValue As Decimal) As Decimal
         'FormulaCurrentPerLoadVsEncoderCounts
         Dim myvalue As Decimal
@@ -700,11 +709,10 @@ Public Class Form1
         
         Try
             Dim ppm As ProfilePositionMode
-            Dim TargetCount As Long ' Unused
-
+            
+            'Dim TargetCount As Long ' Unused
             'get current position and add new encoder value
-
-            TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
+            'TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
 
             ppm = epos.Operation.ProfilePositionMode
             ppm.ActivateProfilePositionMode()
@@ -1347,7 +1355,7 @@ Public Class Form1
     '''     [FACTORY MODE] "Load Hold" Operation
     ''' </summary>
     ''' <remarks>
-    '''     - exactly the same as Load(), but checks CCurrent instead of LoadCurrentN
+    '''     - exactly the same as Load(), but compares MyTargetForce to CCurrent (instantaneous Current) instead of LoadCurrentN (Force calc'd from Current)
     '''     - not currently used by any modes, only internal use
     '''</remarks>
     Public Sub LoadOperation()

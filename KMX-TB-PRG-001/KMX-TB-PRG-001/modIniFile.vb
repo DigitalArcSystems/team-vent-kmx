@@ -35,12 +35,12 @@ Module modIniFile
     Public StartHeightEncoder As Integer
 
     'FormulaCurrentPerLoadVsEncoderCounts
-    Public MotorCurrentTarget_a As Decimal
+    Public MotorCurrentTarget_a As Decimal              ' Target Motor Current polynomial calculation constants
     Public MotorCurrentTarget_b1 As Decimal
     Public MotorCurrentTarget_b2 As Decimal
     Public MotorCurrentTarget_b3 As Decimal
     Public MotorCurrentTarget_b4 As Decimal
-    Public MotorCurrentTarget_K As Decimal
+    Public MotorCurrentTarget_K As Decimal              ' Target Motor Current constant, calculated from Encoder reading
 
     'Formula Get Plate Height from Encoder
     Public PlateHeight_a As Decimal
@@ -108,7 +108,7 @@ Module modIniFile
     Public CPlateHeight As Decimal
     Public CCurrent As Decimal                  ' Actual Current (Current Current)
     Public OperationStatus As String            
-    Public CurrentEncoder As Long
+    Public CurrentEncoder As Long               ' Encoder Count - SAME AS CEncoder
     Public Mytarget As Integer
     Public RunSeek As Boolean = False
     Public MyIntervalTL As Decimal = 1
@@ -120,8 +120,8 @@ Module modIniFile
     Public MyIntervalMTD As Decimal = 1
     Public MyIntervalCFTD As Decimal = 1
     Public RemoteForce As String = ""
-    Public LoadCurrentN As Decimal
-    Public OperationMode As String
+    Public LoadCurrentN As Decimal              ' Load calculated from Current and Encoder
+    Public OperationMode As String              ' One of 4 Operation Modes: Force, RampedForce, Distance, 
     Public RemoteParameter As String
     Public MoveDownEncoderStep As Integer
     Public HomeStatus As Integer = 0             ' 2 - in process, 1 = is_Homed , 0 Not_Home
