@@ -394,10 +394,10 @@ Public Class Form1
             file.WriteLine("DistanceUpStep    = " & DistanceUpStep)                     ' 10000  cts
             file.WriteLine("DistanceRampStep  = " & DistanceRampStep)                   ' 10000  cts
             file.WriteLine("DistanceStayStep  = " & DistanceStayStep)                   ' 1000   cts (was 15000)
+            file.WriteLine("DistanceTuneStep  = " & DistanceTuneStep)                   ' 1000   cts (was 5000)
             file.WriteLine("LoadMaxSafetyDrop = " & LoadMaxSafetyDrop)                  ' 100000 cts            Every time this param is used, check to not go below EncoderCountMIN
             file.WriteLine("FirstMoveStep     = " & FirstMoveStep)                      ' 25000  cts            Encoder counts move DOWN then UP at the very begining of any mode of operation
-            file.WriteLine("DistanceTuneStep  = " & DistanceTuneStep)                   ' 1000   cts (was 5000)
-            file.WriteLine("DistanceTolerance = " & DistanceTolerance)                  ' 0.2 mm
+            file.WriteLine("DistanceTolerance = " & DistanceTolerance)                  ' 0.2 mm ? That's probably false
             file.WriteLine("      ")
             'file.WriteLine("xxxx = " & xxxx)
 
@@ -765,7 +765,7 @@ Public Class Form1
     '''     Stores in respective public vars, 
     '''     and Updates local gui
     ''' </summary>
-    Private Sub GetCurrentData()
+    Private Sub GetCurrentData()        ' Rename GetMotorData()
         If epos Is Nothing Then
             ' object doesn't exist yet
         Else
@@ -1217,7 +1217,7 @@ Public Class Form1
 
 #Region "Operations"
     ''' <summary>
-    '''  
+    '''  ONLY used for Seek() and Force Operations [ Force(), RampedForce(), LoadOperation() ]
     ''' </summary>
     Private Sub OperationCycle()
         Dim MyCurrentTarget As Decimal
@@ -1539,19 +1539,19 @@ Public Class Form1
             AddFileLine("Stay", "Yes", OperationMode)
             SendSerialData()
 
-            newtarget = MyTargetDistance - GetPlateHeight(CEncoder)
+            newtarget = MyTargetDistance - GetPlateHeight(CEncoder)         ' Rename to WhereIsPlate and swap subtraction
 
-            If newtarget > DistanceTolerance Then
+            If newtarget > DistanceTolerance Then           ' plate is BELOW target, must move UP
 
                 MoveToPosition(DistanceTuneStep)
                 Wait(MotorCurrentReadPause)
-            ElseIf newtarget < -DistanceTolerance Then
+            ElseIf newtarget < -DistanceTolerance Then      ' plate is ABOVE target, must move DOWN
 
-                MoveToPosition(-DistanceStayStep)
+                MoveToPosition(-DistanceStayStep)           ' this seems wrong
                 Wait(MotorCurrentReadPause)
                 MoveToPosition(DistanceTuneStep)
                 Wait(MotorCurrentReadPause)
-            Else
+            Else                                            ' plate is WITHIN TOLERANCE, move down a little and back up
 
                 MoveToPosition(-DistanceStayStep)
                 Wait(MotorCurrentReadPause)
