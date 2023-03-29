@@ -40,6 +40,7 @@ Public Class Form1
     
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Control.CheckForIllegalCrossThreadCalls = False
+        QuickConnect()
     End Sub
     
     ''' <summary>
@@ -57,8 +58,17 @@ Public Class Form1
 
 #Region "Menu Items"
 
+    Private Sub QuickConnect()
+        Try
+            OpenIniFile(System.AppDomain.CurrentDomain.BaseDirectory & "_INI-SJX-004-Newtons-50.ini")
+            Connect()
+        Catch ex As EposCmd.Net.DeviceException
+            ConnectDialog()
+        End Try
+    End Sub
+    
     ''' <summary>
-    ''' "Connect" Button (in Ribbon/strip-menu along top of UI)
+    '''     "Connect" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
     ''' <remarks>
     '''  <list type="bullet">
@@ -67,8 +77,10 @@ Public Class Form1
     '''  <item><description> </description></item>
     '''  </list>
     ''' </remarks>
-    
     Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+        ConnectDialog()
+    End Sub
+    Private Sub ConnectDialog()
         Try
 
             OpenFileDialog1.Title = "Please Select ini File"
@@ -78,82 +90,84 @@ Public Class Form1
 
             If OpenFileDialog1.FileName = "" Then Exit Sub
             OpenIniFile(OpenFileDialog1.FileName)
-
-            Try
-
-                Dim sm As StateMachine
-                connector = New DeviceManager
-
-                epos = connector.CreateDevice(1)
-
-                sm = epos.Operation.StateMachine
-
-                If sm.GetFaultState() Then
-                    sm.ClearFault()
-                End If
-
-                sm.SetEnableState()
-
-                GetCurrentData()
-
-                ManualPanelState(True)
-
-                Me.Text = "KMX-TB-PRG-001 - ( " & Path.GetFileName(OpenFileDialog1.FileName) & " )"
-
-                'Update value read from ini file
-
-                EncoderMax = GetEncoderPosition(DistanceMax)
-                EncoderMin = GetEncoderPosition(DistanceMin)
-
-                DisconnectToolStripMenuItem.Enabled = True
-                RemoteModeToolStripMenuItem.Enabled = True
-
-                ToolTip1.SetToolTip(NUDDistance, "Value: " & DistanceMin & " To " & DistanceMax)
-                ToolStripStatusLabel4.Text = "Idle"
-
-                LblDRP.Text = DistanceRampPause.ToString("0000") & " ms"
-                LblFRP.Text = ForceRampPause.ToString("0000") & " ms"
-
-                NUDTargetLoad.Maximum = LoadMax
-                NUDTargetLoad.Increment = 44.48
-                NUDTargetLoad.Value = LoadTarget
-
-                NUDHomingCurrent.Maximum = MotorCurrentMax
-                NUDHomingCurrent.Value = HomingCurrent
-
-                NUDEncoderCounts.Maximum = EncoderCountMax
-                NUDEncoderCounts.Minimum = EncoderCountMin
-                NUDEncoderCounts.Value = 10000
-
-                NUDMM.Maximum = 10
-
-                NUDTargetDistance.Maximum = DistanceMax
-                NUDTargetDistance.Minimum = DistanceMin
-                NUDTargetDistance.Value = 9.0
-
-                NUDDistance.Maximum = DistanceMax
-                NUDDistance.Minimum = DistanceMin
-
-                NUDMCTK.Value = MotorCurrentTarget_K            ' Target Motor Current constant
-                NUDPHK.Value = PlateHeight_K
-                NUDLACK.Value = LoadAtCurrent_K
-                NUDECAK.Value = EncoderCountsAbsolute_K
-
-                NUDSHeight.Maximum = EncoderCountMax
-                NUDSHeight.Minimum = EncoderCountMin
-                NUDSHeight.Value = StartHeightEncoder
-
-                ToolStripStatusLabel8.Text = DeviceName
-
-            Catch ex As EposCmd.Net.DeviceException
-
-                ShowMessageBox(ex.ErrorMessage, ex.ErrorCode)
-            Catch ex As Exception
-
-                MessageBox.Show(ex.Message)
-            End Try
+            Connect()
         Catch ex As Exception
             MsgBox(ex.Message)
+        End Try
+    End Sub
+    
+    Private Sub Connect()
+        Try
+            Dim sm As StateMachine
+            connector = New DeviceManager
+
+            epos = connector.CreateDevice(1)
+
+            sm = epos.Operation.StateMachine
+
+            If sm.GetFaultState() Then
+                sm.ClearFault()
+            End If
+
+            sm.SetEnableState()
+
+            GetCurrentData()
+
+            ManualPanelState(True)
+
+            Me.Text = "KMX-TB-PRG-001 - ( " & Path.GetFileName(OpenFileDialog1.FileName) & " )"
+
+            'Update value read from ini file
+
+            EncoderMax = GetEncoderPosition(DistanceMax)
+            EncoderMin = GetEncoderPosition(DistanceMin)
+
+            DisconnectToolStripMenuItem.Enabled = True
+            RemoteModeToolStripMenuItem.Enabled = True
+
+            ToolTip1.SetToolTip(NUDDistance, "Value: " & DistanceMin & " To " & DistanceMax)
+            ToolStripStatusLabel4.Text = "Idle"
+
+            LblDRP.Text = DistanceRampPause.ToString("0000") & " ms"
+            LblFRP.Text = ForceRampPause.ToString("0000") & " ms"
+
+            NUDTargetLoad.Maximum = LoadMax
+            NUDTargetLoad.Increment = 44.48
+            NUDTargetLoad.Value = LoadTarget
+
+            NUDHomingCurrent.Maximum = MotorCurrentMax
+            NUDHomingCurrent.Value = HomingCurrent
+
+            NUDEncoderCounts.Maximum = EncoderCountMax
+            NUDEncoderCounts.Minimum = EncoderCountMin
+            NUDEncoderCounts.Value = 10000
+
+            NUDMM.Maximum = 10
+
+            NUDTargetDistance.Maximum = DistanceMax
+            NUDTargetDistance.Minimum = DistanceMin
+            NUDTargetDistance.Value = 9.0
+
+            NUDDistance.Maximum = DistanceMax
+            NUDDistance.Minimum = DistanceMin
+
+            NUDMCTK.Value = MotorCurrentTarget_K            ' Target Motor Current constant
+            NUDPHK.Value = PlateHeight_K
+            NUDLACK.Value = LoadAtCurrent_K
+            NUDECAK.Value = EncoderCountsAbsolute_K
+
+            NUDSHeight.Maximum = EncoderCountMax
+            NUDSHeight.Minimum = EncoderCountMin
+            NUDSHeight.Value = StartHeightEncoder
+
+            ToolStripStatusLabel8.Text = DeviceName
+
+        Catch ex As EposCmd.Net.DeviceException
+
+            ShowMessageBox(ex.ErrorMessage, ex.ErrorCode)
+        Catch ex As Exception
+
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
@@ -277,7 +291,17 @@ Public Class Form1
         Try
             Dim file As System.IO.StreamWriter
             file = My.Computer.FileSystem.OpenTextFileWriter(RecordDataFile, True)
-            file.WriteLine(Now.ToString("hh:mm:ss.fff") & " , " & FormatNumber(GetPlateHeight(CEncoder), 2) & " , " & FormatNumber(LoadCurrentN, 1) & " , " & CCurrent & " , " & CEncoder & " , " & FormatNumber(LblTargetCurrent.Text, 1) & " , " & FormatNumber(MotorCurrentTolerance, 2) & " , " & MyDecision & " , " & SerialStream & " , " & OperationMode)
+            file.WriteLine(
+                Now.ToString("hh:mm:ss.fff") & " , " & 
+                CEncoder & " , " & 
+                FormatNumber(GetPlateHeight(CEncoder), 2) & " , " & 
+                FormatNumber(LoadCurrentN, 1) & " , " & 
+                CCurrent & " , " & 
+                FormatNumber(LblTargetCurrent.Text, 1) & " , " & 
+                FormatNumber(MotorCurrentTolerance, 2) & " , " & 
+                MyDecision & " , " & 
+                SerialStream & " , " & 
+                OperationMode)
             file.Close()
 
         Catch ex As ArgumentException
@@ -337,7 +361,7 @@ Public Class Form1
         ' My.Computer.FileSystem.CreateDirectory(DirectoryName)
 
         'Make filename with date/time stamp
-        RecordDataFile = Now.ToString("MM_dd_yy_hhmmss") & ".csv" ' DirectoryName &
+        RecordDataFile = "_DATA/" & Now.ToString("yyyy-MM-dd_HH_hh.mm.ss.tt") & ".csv" ' removed: DirectoryName &
 
 
         If WriteToFile = 1 Then
@@ -346,86 +370,97 @@ Public Class Form1
             'Write current setting
             file.WriteLine(RecordDataFile)
             file.WriteLine("     Motor Setting  ")                                  '   MOTOR SETTINGS
-            file.WriteLine("MotorVelocity = " & MotorVelocity)                          ' 7500 rpm
-            file.WriteLine("MotorAcceleration = " & MotorAcceleration)                  ' 50000 rpm/s
-            file.WriteLine("MotorDeceleration = " & MotorDeceleration)                  ' 50000 rpm/s
-            file.WriteLine("HomingCurrent = " & HomingCurrent)                          ' 325 mA.
-            file.WriteLine("MotorCurrentReadPause = " & MotorCurrentReadPause)          ' 50 ms
-            file.WriteLine("ClosingCurrent = " & ClosingCurrent)                        ' -150 mA
-            file.WriteLine("DistanceMax = " & DistanceMax)                              ' 18 mm
-            file.WriteLine("DistanceMin = " & DistanceMin)                              ' 9 mm
-            file.WriteLine("HomeHeight = " & HomeHeight)                                ' 9 mm
-            file.WriteLine("LoadMax = " & LoadMax)                                      ' 300 N (60lb) ; was 267 N (60lb)
-            file.WriteLine("EncoderCountMax = " & EncoderCountMax)                      ' 275000 cts                        (was written as mA?)
-            file.WriteLine("EncoderCountMin = " & EncoderCountMin)                      ' -150000 cts
-            file.WriteLine("MotorCurrentMax = " & MotorCurrentMax)                      ' 700  mA
-            file.WriteLine("StartHeightEncoder = " & StartHeightEncoder)                ' -50000 cts
-            file.WriteLine("      ")
+            file.WriteLine(" , " & 
+                "MotorVelocity = " & MotorVelocity & " , " &        ' 7500 rpm
+                "MotorAcceleration = " & MotorAcceleration & " , " &                   ' 50000 rpm/s
+                "MotorDeceleration = " & MotorDeceleration & " , " &                   ' 50000 rpm/s
+                "HomingCurrent = " & HomingCurrent & " , " &                           ' 325 mA.
+                "MotorCurrentReadPause = " & MotorCurrentReadPause & " , " &           ' 50 ms
+                "ClosingCurrent = " & ClosingCurrent & " , " &                         ' -150 mA
+                "DistanceMax = " & DistanceMax & " , " &                               ' 18 mm
+                "DistanceMin = " & DistanceMin & " , " &                               ' 9 mm
+                "HomeHeight = " & HomeHeight & " , " &                                 ' 9 mm
+                "LoadMax = " & LoadMax & " , " &                                       ' 300 N (60lb) ; was 267 N (60lb)
+                "EncoderCountMax = " & EncoderCountMax & " , " &                       ' 275000 cts                        (was written as mA?)
+                "EncoderCountMin = " & EncoderCountMin & " , " &                       ' -150000 cts
+                "MotorCurrentMax = " & MotorCurrentMax & " , " &                       ' 700  mA
+                "StartHeightEncoder = " & StartHeightEncoder)                          ' -50000 cts
+
             file.WriteLine("     FormulaCurrentPerLoadVsEncoderCounts  ")               ' Target Current per Load      <--      Encoder Counts
-            file.WriteLine("MotorCurrentTarget_a = " & MotorCurrentTarget_a)            ' MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
-            file.WriteLine("MotorCurrentTarget_b1 = " & MotorCurrentTarget_b1)
-            file.WriteLine("MotorCurrentTarget_b2 = " & MotorCurrentTarget_b2)
-            file.WriteLine("MotorCurrentTarget_b3 = " & MotorCurrentTarget_b3)
-            'file.WriteLine("MotorCurrentTarget_b4 = " & MotorCurrentTarget_b4)
-            file.WriteLine("MotorCurrentTarget_K = " & NUDMCTK.Value)
-            file.WriteLine("      ")
+            file.WriteLine(" , " & 
+                "MotorCurrentTarget_a = " & MotorCurrentTarget_a & " , " &               ' MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
+                "MotorCurrentTarget_b1 = " & MotorCurrentTarget_b1 & " , " &
+                "MotorCurrentTarget_b2 = " & MotorCurrentTarget_b2 & " , " &
+                "MotorCurrentTarget_b3 = " & MotorCurrentTarget_b3 & " , " &
+                "MotorCurrentTarget_K = " & NUDMCTK.Value)
+
             file.WriteLine("     FormulaLoadPerCurrentVsEncoderCounts  ")               ' Load      <--      Current
-            file.WriteLine("LoadAtCurrent_a = " & LoadAtCurrent_a)                      ' LoadAtCurrent = MeasuredCurrent * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
-            file.WriteLine("LoadAtCurrent_b1 = " & LoadAtCurrent_b1)
-            file.WriteLine("LoadAtCurrent_b2 = " & LoadAtCurrent_b2)
-            file.WriteLine("LoadAtCurrent_b3 = " & LoadAtCurrent_b3)
-            '   file.WriteLine("LoadAtCurrent_b4 = " & LoadAtCurrent_b4)
-            file.WriteLine("LoadAtCurrent_K = " & NUDLACK.Value)
-            file.WriteLine("      ")
+            file.WriteLine(" , " & 
+                "LoadAtCurrent_a = " & LoadAtCurrent_a & " , " &                      ' LoadAtCurrent = MeasuredCurrent * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
+                "LoadAtCurrent_b1 = " & LoadAtCurrent_b1 & " , " &
+                "LoadAtCurrent_b2 = " & LoadAtCurrent_b2 & " , " &
+                "LoadAtCurrent_b3 = " & LoadAtCurrent_b3 & " , " &
+                "LoadAtCurrent_K = " & NUDLACK.Value)
+
             file.WriteLine("     FormulaHeightVsEncoder  ")                             ' Height    <--     Encoder
-            file.WriteLine("PlateHeight_a = " & PlateHeight_a)                          ' PlateHeight = b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a_shift
-            file.WriteLine("PlateHeight_b1 = " & PlateHeight_b1)                        '       a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
-            file.WriteLine("PlateHeight_b2 = " & PlateHeight_b2)
-            file.WriteLine("PlateHeight_b3 = " & PlateHeight_b3)
-            '  file.WriteLine("PlateHeight_b4 = " & PlateHeight_b4)
-            file.WriteLine("PlateHeight_intercept = " & PlateHeight_intercept)
-            file.WriteLine("PlateHeight_base = " & PlateHeight_base)
-            file.WriteLine("PlateHeight_shift = " & PlateHeight_shift)
-            file.WriteLine("PlateHeight_K = " & NUDPHK.Value)
-            file.WriteLine("      ")
+            file.WriteLine(" , " & 
+                "PlateHeight_a = " & PlateHeight_a & " , " &                          ' PlateHeight = b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a_shift
+                "PlateHeight_b1 = " & PlateHeight_b1 & " , " &                        '       a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
+                "PlateHeight_b2 = " & PlateHeight_b2 & " , " &
+                "PlateHeight_b3 = " & PlateHeight_b3 & " , " &
+                "PlateHeight_intercept = " & PlateHeight_intercept & " , " &
+                "PlateHeight_base = " & PlateHeight_base & " , " &
+                "PlateHeight_shift = " & PlateHeight_shift & " , " &
+                "PlateHeight_K = " & NUDPHK.Value)
+
             file.WriteLine("     FormulaEncoderVsHeight  ")                             ' Encoder   <---    Height
-            file.WriteLine("EncoderCountsAbsolute_a = " & EncoderCountsAbsolute_a)      ' EncoderCountsAbsolute = b3(Height^3) + b2(Height^2)+ b1(Height) + a_off
-            file.WriteLine("EncoderCountsAbsolute_b1 = " & EncoderCountsAbsolute_b1)    '       a_off = intercept + ((SetLoad - BaseLoad) x Shift)) 
-            file.WriteLine("EncoderCountsAbsolute_b2 = " & EncoderCountsAbsolute_b2)    '       same equation. but different values as:         a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
-            file.WriteLine("EncoderCountsAbsolute_b3 = " & EncoderCountsAbsolute_b3)
-            '  file.WriteLine("EncoderCountsAbsolute_b4 = " & EncoderCountsAbsolute_b4)
-            file.WriteLine("EncoderCountsAbsolute_intercept = " & EncoderCountsAbsolute_intercept)
-            file.WriteLine("EncoderCountsAbsolute_base = " & EncoderCountsAbsolute_base)
-            file.WriteLine("EncoderCountsAbsolute_shift = " & EncoderCountsAbsolute_shift)
-            file.WriteLine("EncoderCountsAbsolute_K = " & NUDECAK.Value)
-            file.WriteLine("      ")
+            file.WriteLine(" , " & 
+                "EncoderCountsAbsolute_a = " & EncoderCountsAbsolute_a & " , " &      ' EncoderCountsAbsolute = b3(Height^3) + b2(Height^2)+ b1(Height) + a_off
+                "EncoderCountsAbsolute_b1 = " & EncoderCountsAbsolute_b1 & " , " &    '       a_off = intercept + ((SetLoad - BaseLoad) x Shift)) 
+                "EncoderCountsAbsolute_b2 = " & EncoderCountsAbsolute_b2 & " , " &    '       same equation. but different values as:         a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
+                "EncoderCountsAbsolute_b3 = " & EncoderCountsAbsolute_b3 & " , " &
+                "EncoderCountsAbsolute_intercept = " & EncoderCountsAbsolute_intercept & " , " &
+                "EncoderCountsAbsolute_base = " & EncoderCountsAbsolute_base & " , " &
+                "EncoderCountsAbsolute_shift = " & EncoderCountsAbsolute_shift & " , " &
+                "EncoderCountsAbsolute_K = " & NUDECAK.Value)
+
             file.WriteLine("     Operation  ")                                      '   OPERATION
-            file.WriteLine("ForceStepCoeff        = " & ForceStepCoeff)                 ' 180 cts/N             Value for STAY down&up move. Modes Seek
-            file.WriteLine("LoadTarget            = " & LoadTarget)                     ' 180 N (was 44.48 N)   defines a starting target load when the program is initiated
-            file.WriteLine("LoadTolerance         = " & LoadTolerance)                  ' 3 N (was 10 N)        Value is multiplied by the look up equation to define what the motor current tolerance band should be ("User-set"??) 
-            file.WriteLine("LoadApproachForce     = " & LoadApproachForce)              ' 80 % of N             [HoldForce Mode]     plates continue only upwards in increments of ForceUpStep   until this % of Target load is reached
-            file.WriteLine("LoadApproachForceRamp = " & LoadApproachForceRamp)          ' 80 % of N             [Ramped HoldForce M] plates continue only upwards in increments of ForceRampStep until this % of Target load is reached
-            file.WriteLine("SeekCyclePause    = " & SeekCyclePause)                     ' 1  ms
-            file.WriteLine("ForceUpPause      = " & ForceUpPause)                       ' 1  ms
-            file.WriteLine("ForceRampPause    = " & ForceRampPause)                     ' 20 ms
-            file.WriteLine("DistancePause     = " & DistancePause)                      ' XX ms                 [ missing from example .ini ]
-            file.WriteLine("DistanceRampPause = " & DistanceRampPause)                  ' 25 ms
-            file.WriteLine("SeekUpStep        = " & SeekUpStep)                         ' 2000   cts            Move UP when Target Current < Tolerance.                                Modes:  Seek
-            file.WriteLine("ForceDownStepNet  = " & ForceDownStepNet)                   ' 4000   cts            Net DOWN move.                                                          Modes:  HoldForce, Ramp-HoldForce, Seek
-            file.WriteLine("ForceUpStep       = " & ForceUpStep)                        ' 15000  cts
-            file.WriteLine("ForceRampStep     = " & ForceRampStep)                      ' 2000   cts            Move UP when Target Current < Tolerance. Tune the Pause for slowness.   Modes:  Ramp-HoldForce
-            file.WriteLine("DistanceUpStep    = " & DistanceUpStep)                     ' 10000  cts
-            file.WriteLine("DistanceRampStep  = " & DistanceRampStep)                   ' 10000  cts
-            file.WriteLine("DistanceStayStep  = " & DistanceStayStep)                   ' 1000   cts (was 15000)
-            file.WriteLine("DistanceTuneStep  = " & DistanceTuneStep)                   ' 1000   cts (was 5000)
-            file.WriteLine("LoadMaxSafetyDrop = " & LoadMaxSafetyDrop)                  ' 100000 cts            Every time this param is used, check to not go below EncoderCountMIN
-            file.WriteLine("FirstMoveStep     = " & FirstMoveStep)                      ' 25000  cts            Encoder counts move DOWN then UP at the very begining of any mode of operation
-            file.WriteLine("DistanceTolerance = " & DistanceTolerance)                  ' 0.2 mm ? That's probably false
+            file.WriteLine(" , " & 
+                "ForceStepCoeff        = " & ForceStepCoeff & " , " &                 ' 180 cts/N             Value for STAY down&up move. Modes Seek
+                "LoadTarget            = " & LoadTarget & " , " &                     ' 180 N (was 44.48 N)   defines a starting target load when the program is initiated
+                "LoadTolerance         = " & LoadTolerance & " , " &                  ' 3 N (was 10 N)        Value is multiplied by the look up equation to define what the motor current tolerance band should be ("User-set"??) 
+                "LoadApproachForce     = " & LoadApproachForce & " , " &              ' 80 % of N             [HoldForce Mode]     plates continue only upwards in increments of ForceUpStep   until this % of Target load is reached
+                "LoadApproachForceRamp = " & LoadApproachForceRamp & " , " &          ' 80 % of N             [Ramped HoldForce M] plates continue only upwards in increments of ForceRampStep until this % of Target load is reached
+                "SeekCyclePause    = " & SeekCyclePause & " , " &                     ' 1  ms
+                "ForceUpPause      = " & ForceUpPause & " , " &                       ' 1  ms
+                "ForceRampPause    = " & ForceRampPause & " , " &                     ' 20 ms
+                "DistancePause     = " & DistancePause & " , " &                      ' XX ms                 [ missing from example .ini ]
+                "DistanceRampPause = " & DistanceRampPause & " , " &                  ' 25 ms
+                "SeekUpStep        = " & SeekUpStep & " , " &                         ' 2000   cts            Move UP when Target Current < Tolerance.                                Modes:  Seek
+                "ForceDownStepNet  = " & ForceDownStepNet & " , " &                   ' 4000   cts            Net DOWN move.                                                          Modes:  HoldForce, Ramp-HoldForce, Seek
+                "ForceUpStep       = " & ForceUpStep & " , " &                        ' 15000  cts
+                "ForceRampStep     = " & ForceRampStep & " , " &                      ' 2000   cts            Move UP when Target Current < Tolerance. Tune the Pause for slowness.   Modes:  Ramp-HoldForce
+                "DistanceUpStep    = " & DistanceUpStep & " , " &                     ' 10000  cts
+                "DistanceRampStep  = " & DistanceRampStep & " , " &                   ' 10000  cts
+                "DistanceStayStep  = " & DistanceStayStep & " , " &                   ' 1000   cts (was 15000)
+                "DistanceTuneStep  = " & DistanceTuneStep & " , " &                   ' 1000   cts (was 5000)
+                "LoadMaxSafetyDrop = " & LoadMaxSafetyDrop & " , " &                  ' 100000 cts            Every time this param is used, check to not go below EncoderCountMIN
+                "FirstMoveStep     = " & FirstMoveStep & " , " &                      ' 25000  cts            Encoder counts move DOWN then UP at the very begining of any mode of operation
+                "DistanceTolerance = " & DistanceTolerance)                  ' 0.2 mm ? That's probably false
             file.WriteLine("      ")
             'file.WriteLine("xxxx = " & xxxx)
 
             'Write to header to file
-            file.WriteLine("Time" & " , " & "Calc'd Height (mm)" & " , " & "Calc'd Load (N)" & " , " & "Actual Current (mA)" & " , " & "Encoder Count" & " , " & "Target Current" & " , " & "Tolerance Current" & " , " & "Decision" & " , " & "Serial Stream" & " , " & "Mode")
+            file.WriteLine("Time" & " , " & 
+                           "Encoder Count" & " , " & 
+                           "Calc'd Height (mm)" & " , " & 
+                           "Calc'd Load (N)" & " , " & 
+                           "Actual Current (mA)" & " , " & 
+                           "Target Current" & " , " & 
+                           "Tolerance Current" & " , " & 
+                           "Decision" & " , " & 
+                           "Serial Stream" & " , " & 
+                           "Mode")
             file.Close()
         End If
     End Sub
@@ -731,6 +766,45 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub MoveToPositionRevamp(EncoderNum As Integer, reached As Boolean)
+        If epos Is Nothing Then
+            MessageBox.Show("Please connect to the device")
+            OperationStatus = "Stop"
+            Exit Sub
+        End If
+
+        Try
+            Dim ppm As ProfilePositionMode
+
+            'Dim TargetCount As Long ' Unused
+            'get current position and add new encoder value
+            'TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
+' ------------------ V MoveToPosition TEST BED V ----------------------------
+            ppm = epos.Operation.ProfilePositionMode
+            ppm.ActivateProfilePositionMode()
+            
+            ppm.MoveToPosition(EncoderNum, 0, True)
+
+            
+            'epos.Operation.MotionInfo.WaitForTargetReached(10000) ' timeout = 10 seconds
+            Do While not reached
+                GetCurrentData()
+                epos.Operation.MotionInfo.GetMovementState(reached) ' timeout = 10 seconds
+                AddFileLine("Down", "No", reached)
+            Loop
+
+' ------------------ ^ MoveToPosition TEST BED ^ ----------------------------
+        Catch eb As EposCmd.Net.DeviceException
+            ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
+        Catch eb As OverflowException
+            MessageBox.Show(eb.Message)
+        Catch eb As FormatException
+            MessageBox.Show(eb.Message)
+        Catch eb As Exception
+            MessageBox.Show(eb.Message)
+        End Try
+    End Sub
+    
     ''' <summary>
     '''  Moves to relative position by amount specified (as opposed to absolute postion via MoveToPositionABS)
     ''' </summary>
@@ -1446,7 +1520,7 @@ Public Class Form1
     '''</remarks>
 
     Public Sub LoadOperation()
-        Dim MyTargetForce As Decimal
+       ' Dim MyTargetForce As Decimal
 
         OperationStatus = "Start"
 
@@ -1465,33 +1539,25 @@ Public Class Form1
         PanSetHome.Enabled = False
         PanManual.Enabled = False
 
-        ' ------------------ TEST BED ----------------------------
-
-
-
-
-        '        ' Move by force to % of target load
-        '        MyTargetForce = NUDTargetLoad.Value * (LoadApproachForce / 100)
-        '
+' ------------------ V LoadOperation TEST BED V ----------------------------
+        Dim reached As Boolean
+        
         'first move
-        MoveToPosition(-FirstMoveStep)
+        MoveToPositionRevamp(-FirstMoveStep,reached)
         Wait(MotorCurrentReadPause)
         GetCurrentData()
+        Wait(1000)
 
-        Do
             GetCurrentData()
-            MoveToPosition(50000)
-            GetCurrentData()
-            MoveToPosition(50000)
-            GetCurrentData()
+            MoveToPositionRevamp(50000,reached)
+            
             Wait(1000)
-            MoveToPosition(-50000)
-            GetCurrentData()
+            reached = false
+            MoveToPositionRevamp(- 50000,reached)
+            
             Wait(1000)
-            MoveToPosition(-50000)
-            GetCurrentData()
-            Wait(1000)
-        Loop Until OperationStatus = "Stop"
+        
+' ------------------ ^ LoadOperation TEST BED ^ ----------------------------
 
         '
         '        Do
@@ -1514,10 +1580,6 @@ Public Class Form1
         '            OperationCycle()
         '            Wait(SeekCyclePause)
         '        Loop Until OperationStatus = "Stop"
-
-
-
-        ' ------------------ / TEST BED ----------------------------
 
         If InRemoteMode = False Then
             'Enable buttons

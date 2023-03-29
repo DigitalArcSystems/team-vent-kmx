@@ -39,7 +39,7 @@ KMX-TB-PRG-001
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.OpenToolStripMenuItem_Click(System.Object,System.EventArgs)">
  <summary>
- "Connect" Button (in Ribbon/strip-menu along top of UI)
+     "Connect" Button (in Ribbon/strip-menu along top of UI)
  </summary>
  <remarks>
   <list type="bullet">
