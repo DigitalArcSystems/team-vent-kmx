@@ -22,8 +22,456 @@ KMX-TB-PRG-001
   resource lookups using this strongly typed resource class.
 </summary>
 </member>
-<member name="T:KMX_TB_PRG_001.Form1.TransmissionType">
- enumeration to hold our message types
+<member name="T:KMX_TB_PRG_001.Form1">
+ <summary>
+ GUI form class for accepting user input
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.Form1_Load(System.Object,System.EventArgs)">
+ <summary>
+ Load Form1 using base method
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.Form1_Closing(System.Object,System.ComponentModel.CancelEventArgs)">
+ <summary>
+ Calls when this class (Form1) is closed
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.OpenToolStripMenuItem_Click(System.Object,System.EventArgs)">
+ <summary>
+ "Connect" Button (in Ribbon/strip-menu along top of UI)
+ </summary>
+ <remarks>
+  <list type="bullet">
+  <item><description> Opens dialog box that requests .ini configuration file from user </description></item>
+  <item><description> Populates UI, using .ini file variables </description></item>
+  <item><description> </description></item>
+  </list>
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.DisconnectToolStripMenuItem_Click(System.Object,System.EventArgs)">
+ <summary>
+ "Disconnect" Button (in Ribbon/strip-menu along top of UI)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.RemoteModeToolStripMenuItem_Click(System.Object,System.EventArgs)">
+ <summary>
+ "Remote Control" Button (in Ribbon/strip-menu along top of UI)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.LocalModeToolStripMenuItem_Click(System.Object,System.EventArgs)">
+ <summary>
+ "Local Control" Button (in Ribbon/strip-menu along top of UI)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.AddFileLine(System.String,System.String,System.String)">
+ <summary>
+     Adds a line to local Log file, with:
+ 
+ <list type="bullet">
+     <item>  Timestamp                       </item>
+     <item>  Plate Height (mm),              </item>
+     <item>  Load (N),                       </item>
+     <item>  Current (mA),                   </item>
+     <item>  Encoder Counts (cts)            </item>
+     <item>  target Current (mA),            </item>
+     <item>  target Current Tolerance (mA),  </item>
+     <item>  Movement Direction (string)     </item>
+     <item>  sending to serial stream (bool) </item>
+     <item>  Mode of Operation (string)      </item>
+ </list>
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.SendSerialData">
+ <summary>
+     Sends info over serial:
+ 
+ <list type="bullet">
+     <item>  Timestamp             </item>
+     <item>  Serial Word (Flags)   </item>
+     <item>  Plate Height          </item>
+     <item>  Load (min of 0??)     </item>
+ </list>
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.CreateFile">
+ <summary>
+ Save time-stamped file to memory with all current variables and constants.
+ </summary>
+<remarks>
+ ( Good to have saved in case of loss of power or state errors )
+</remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.ManualPanelState(System.Boolean)">
+ <summary>
+ Enables/Disables all components of Manual Panel (left side) with supplied boolean
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.RemotePanelState(System.Boolean)">
+ <summary>
+ Enables/Disables all components of Remote Panel (right side) with supplied boolean
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.SetMode(System.String)">
+ <summary>
+ Highlight UI element for current type of movement
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.UpdateRemoteCommands(System.String,System.String,System.String,System.String)">
+ <summary>
+  
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.ShowMessageBox(System.String,System.UInt32)">
+ <summary>
+  
+ </summary>
+</member>
+<member name="P:KMX_TB_PRG_001.Form1.DisplayWindow">
+ <summary>
+  
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.DisplayData(KMX_TB_PRG_001.Form1.MessageType,System.String)">
+ <summary>
+  
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.DoDisplay(System.Object,System.EventArgs)">
+ <summary>
+  
+ </summary>
+</member>
+<member name="P:KMX_TB_PRG_001.Form1.Message">
+ <summary>
+  
+ </summary>
+</member>
+<member name="P:KMX_TB_PRG_001.Form1.Type">
+ <summary>
+  
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.GetTargetCurrentperLoadmA(System.Decimal)">
+ <summary>
+     Calculates required "Motor Current per Load" based on motor's present Encoder Count.
+     (Motor Current required to apply a given HoldForce changes based on plate's height.) 
+ </summary>
+ <param name="EncoderVal">
+     Encoder counts (cts) at present
+ </param>
+ <returns>
+     Current per Load (mA/N)
+ </returns>
+ <remarks>
+     MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.GetPlateHeight(System.Decimal)">
+ <summary>
+     Calculates Plate Height from Encoder Count
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.GetEncoderPosition(System.Decimal)">
+ <summary>
+     Calculates Encoder Count (cts) from Plate Height (mm or 0.1 mm?) (distraction)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.CalculateLoadAtCurrent(System.Decimal,System.Decimal)">
+ <summary>
+     Calculates HoldForce of Load on plates using Motor Current and Encoder Counts
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.SetCurrent(System.Int32)">
+ <summary>
+     Set Motor Controller to Current Mode, and control with given Current
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.CheckForPause">
+ <summary>
+  If OperationStatus is "Pause", wait in 1 second increments
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.SetMoveParameter">
+<summary>
+     Set Motor Controller to Profile Positiion Mode,
+     and set its parameters for velocity, acceleration, and deceleration
+</summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.MoveToPosition(System.Int32)">
+ <summary>
+  Moves to relative position by amount specified (as opposed to absolute postion via MoveToPositionABS)
+ </summary>
+ <remarks>
+ Combine with ABS, add bool param for absolute
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.MoveToPositionABS(System.Int32)">
+ <summary>
+  Move to absolute position on encoder (as opposed to relative postion via MoveToPosition)
+ </summary>
+ <remarks>
+ Combine into other, add bool param for absolute
+</remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.GetCurrentData">
+ <summary>
+     Gets values for Encoder and Current, 
+     Calculates Height and Load, 
+     Sets SerialWord flags,
+     Stores in respective public vars, 
+     and Updates local gui
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnSetZero_Click(System.Object,System.EventArgs)">
+ <summary>
+     Sets epos to Homing Mode,
+     Defines current position as Home
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnStartOC_Click(System.Object,System.EventArgs)">
+ <summary>
+     Start Button - Event handler (makes decision based on which mode's checkbox is selected)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnPauseOc_Click(System.Object,System.EventArgs)">
+ <summary>
+     Pause Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnResumeOc_Click(System.Object,System.EventArgs)">
+ <summary>
+     Resume Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnStopOc_Click(System.Object,System.EventArgs)">
+ <summary>
+     Stop Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnRemoteStop_Click(System.Object,System.EventArgs)">
+ <summary>
+     Remote Stop Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnClose_Click(System.Object,System.EventArgs)">
+ <summary>
+     Close Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnRetractOc_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Retract Plates" Button (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnAZC_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Stop" Button (Set Home) - Event handler 
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnStopPlatesOc_Click(System.Object,System.EventArgs)">
+ <summary>
+      "Power Off" Button (Control Functions) - Event handler
+ </summary>
+ <remarks>
+     actually Halt function
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnApplyCurrent_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Apply Current" Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnMoveUP_Click(System.Object,System.EventArgs)">
+ <summary>
+      "Manual Jog Up (Encoder cts)" Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnMoveDown_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Manual Jog Down (Encoder cts)" Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnMoveUpmm_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Manual Jog Up (mm)" Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnMoveDownmm_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Manual Jog Down (mm)" Button - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnMtD_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Move to HoldDistance" Button (mm) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.BtnMtEZ_Click(System.Object,System.EventArgs)">
+ <summary>
+     "Move to Start Height" Button (cts) - Event handler  
+ </summary>
+ <remarks>
+     AKA: "Move to Encoder Zero"
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDTargetLoad_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "Target Load" Field Up/Down Increment Buttons (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDTargetDistance_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "Target HoldDistance" Field Up/Down Increment Buttons (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDDistance_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "HoldDistance" Field Up/Down Increment Buttons (Manual Jog) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDHomingCurrent_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "Homing Current" Field Up/Down Increment Buttons (Set Home) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDMM_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "Millimeter" Field Up/Down Increment Buttons (Manual Jog) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDMCTK_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "MotorCurrentTarget_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDPHK_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "PlateHeight_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDLACK_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "LoadAtCurrent_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDECAK_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+ <summary>
+     "EncoderCountsAbsolute_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDTargetLoad_ValueChanged(System.Object,System.EventArgs)">
+ <summary>
+     "Target Load" Field number change (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.NUDTargetDistance_ValueChanged(System.Object,System.EventArgs)">
+ <summary>
+     "Target HoldDistance" Field number change (Control Functions) - Event handler
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.OperationCycle">
+ <summary>
+  ONLY used for Seek() and HoldForce Operations [ HoldForce(), RampedForce(), LoadOperation() ]
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.CollapsePlates">
+ <summary>
+     Closes plates using ClosingCurrent(-150 mA)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.LoadOperation">
+ <summary>
+     [Bad Function / FACTORY MODE] "Load Hold" Operation
+ </summary>
+ <remarks>
+     - exactly the same as Load(), but compares MyTargetForce to CCurrent (instantaneous Current) instead of LoadCurrentN (Load HoldForce calc'd from Current)
+     - not currently used by any modes, only internal use
+</remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.Seek">
+ <summary>
+  Extra function to start Seek without entering full operational mode
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.HoldForce">
+ <summary>
+  Seek Force
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.HoldDistance(System.Decimal)">
+ <summary>
+  Seek Distance
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.RampForce(System.Decimal)">
+ <summary>
+ Increments position in steps until Load matches or exceeds target force
+ ( Parameter MyTargetForce is overwritten without being used )
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.RampDistance(System.Decimal)">
+ <summary>
+ Increments position in steps until Position matches or exceeds target position
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.CheckMaxForce">
+ <summary>
+     Safety check that verifies current load is within limit
+ </summary>
+ <remarks>
+     If load is above limit
+ <list type="bullet">
+     <item>      Output safety warning to terminal.                          </item>
+     <item>      Move down to predefined position or by predefined amount.   </item>
+     <item>      Temp Pause reading Motor current, either for current protection or avoid bad reading feedback. </item>
+ </list>
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.MoveToHomeZero">
+ <summary>
+     Moves to absolute encoder position 0 (As calibrated with Homing)
+ </summary>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.MoveToStartHeight">
+ <summary>
+     (Inteneded to) Move to "Start Height" set in Manual Jon menu
+ </summary>
+ <remarks>
+     (Not actually called by "Move To Start Height" button <c>BtnMtEZ_Click</c> )
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.RemoteDistance">
+ <summary>
+     (Inteneded to) Move to "HoldDistance" set in Manual Jog menu.
+ </summary>
+ <remarks>
+     (Not actually called by "Move To HoldDistance" button <c>BtnMtD_Click</c> )
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.Timer1_Tick(System.Object,System.EventArgs)">
+ <summary>
+     State machine:  4 Operation Modes 
+ </summary>
+ <remarks>
+     Updates UI with Busy/Idle state.
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.Timer2_Tick(System.Object,System.EventArgs)">
+ <summary>
+     State machine:  Collapse Plastes
+ </summary>
+ <remarks>
+     Updates UI with Busy/Idle state.
+ </remarks>
+</member>
+<member name="M:KMX_TB_PRG_001.Form1.Timer3_Tick(System.Object,System.EventArgs)">
+ <summary>
+     State machine:  Move Home
+ </summary>
+ <remarks>
+     Updates UI with Busy/Idle state.
+ </remarks>
 </member>
 </members>
 </doc>
