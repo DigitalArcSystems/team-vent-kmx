@@ -398,7 +398,7 @@ Partial Class Form1
         Me.BtnMtD.Name = "BtnMtD"
         Me.BtnMtD.Size = New System.Drawing.Size(200, 40)
         Me.BtnMtD.TabIndex = 188
-        Me.BtnMtD.Text = "Move to Distance"
+        Me.BtnMtD.Text = "Move to HoldDistance"
         Me.ToolTip1.SetToolTip(Me.BtnMtD, "Move to distance")
         Me.BtnMtD.UseVisualStyleBackColor = False
         '
@@ -741,7 +741,7 @@ Partial Class Form1
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(156, 20)
         Me.Label19.TabIndex = 226
-        Me.Label19.Text = "Force Ramp Pause:"
+        Me.Label19.Text = "HoldForce Ramp Pause:"
         Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'LblFRP
@@ -764,7 +764,7 @@ Partial Class Form1
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(178, 20)
         Me.Label4.TabIndex = 224
-        Me.Label4.Text = "Distance Ramp Pause:"
+        Me.Label4.Text = "HoldDistance Ramp Pause:"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'LblDRP
@@ -886,7 +886,7 @@ Partial Class Form1
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(116, 27)
         Me.Label12.TabIndex = 197
-        Me.Label12.Text = "Target Distance:"
+        Me.Label12.Text = "Target HoldDistance:"
         Me.Label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'RBTNCFRD
@@ -898,7 +898,7 @@ Partial Class Form1
         Me.RBTNCFRD.Size = New System.Drawing.Size(156, 22)
         Me.RBTNCFRD.TabIndex = 195
         Me.RBTNCFRD.TabStop = True
-        Me.RBTNCFRD.Text = "Ramped Distance "
+        Me.RBTNCFRD.Text = "Ramped HoldDistance "
         Me.RBTNCFRD.UseVisualStyleBackColor = True
         '
         'RBTNCFD
@@ -910,7 +910,7 @@ Partial Class Form1
         Me.RBTNCFD.Size = New System.Drawing.Size(88, 22)
         Me.RBTNCFD.TabIndex = 194
         Me.RBTNCFD.TabStop = True
-        Me.RBTNCFD.Text = "Distance"
+        Me.RBTNCFD.Text = "Hold HoldDistance"
         Me.RBTNCFD.UseVisualStyleBackColor = True
         '
         'RBTNCFRF
@@ -922,7 +922,7 @@ Partial Class Form1
         Me.RBTNCFRF.Size = New System.Drawing.Size(131, 22)
         Me.RBTNCFRF.TabIndex = 193
         Me.RBTNCFRF.TabStop = True
-        Me.RBTNCFRF.Text = "Ramped Force"
+        Me.RBTNCFRF.Text = "Ramped HoldForce"
         Me.RBTNCFRF.UseVisualStyleBackColor = True
         '
         'RBTNCFF
@@ -934,7 +934,7 @@ Partial Class Form1
         Me.RBTNCFF.Size = New System.Drawing.Size(67, 22)
         Me.RBTNCFF.TabIndex = 192
         Me.RBTNCFF.TabStop = True
-        Me.RBTNCFF.Text = "Force"
+        Me.RBTNCFF.Text = "HoldForce"
         Me.RBTNCFF.UseVisualStyleBackColor = True
         '
         'RBTNCFLH
@@ -1108,7 +1108,7 @@ Partial Class Form1
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(74, 18)
         Me.Label5.TabIndex = 182
-        Me.Label5.Text = "Distance:"
+        Me.Label5.Text = "HoldDistance:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'Label16
@@ -1449,7 +1449,7 @@ Partial Class Form1
         Me.LblRemoteD.Name = "LblRemoteD"
         Me.LblRemoteD.Size = New System.Drawing.Size(120, 30)
         Me.LblRemoteD.TabIndex = 207
-        Me.LblRemoteD.Text = "Distance"
+        Me.LblRemoteD.Text = "HoldDistance"
         Me.LblRemoteD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'LblRemoteRD
@@ -1461,7 +1461,7 @@ Partial Class Form1
         Me.LblRemoteRD.Name = "LblRemoteRD"
         Me.LblRemoteRD.Size = New System.Drawing.Size(120, 30)
         Me.LblRemoteRD.TabIndex = 206
-        Me.LblRemoteRD.Text = "Ramp Distance"
+        Me.LblRemoteRD.Text = "Ramp HoldDistance"
         Me.LblRemoteRD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'LblRemoteRF
@@ -1473,7 +1473,7 @@ Partial Class Form1
         Me.LblRemoteRF.Name = "LblRemoteRF"
         Me.LblRemoteRF.Size = New System.Drawing.Size(120, 30)
         Me.LblRemoteRF.TabIndex = 205
-        Me.LblRemoteRF.Text = "Ramp Force"
+        Me.LblRemoteRF.Text = "Ramp HoldForce"
         Me.LblRemoteRF.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'LblRemoteF
@@ -1485,7 +1485,7 @@ Partial Class Form1
         Me.LblRemoteF.Name = "LblRemoteF"
         Me.LblRemoteF.Size = New System.Drawing.Size(120, 30)
         Me.LblRemoteF.TabIndex = 204
-        Me.LblRemoteF.Text = "Force"
+        Me.LblRemoteF.Text = "HoldForce"
         Me.LblRemoteF.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'LblRemoteM
@@ -1576,7 +1576,7 @@ Partial Class Form1
         Me.ToolStripStatusLabel9.Font = New System.Drawing.Font("Arial", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStripStatusLabel9.Name = "ToolStripStatusLabel9"
         Me.ToolStripStatusLabel9.Size = New System.Drawing.Size(93, 35)
-        Me.ToolStripStatusLabel9.Text = "Distance:"
+        Me.ToolStripStatusLabel9.Text = "HoldDistance:"
         '
         'TSDistance
         '

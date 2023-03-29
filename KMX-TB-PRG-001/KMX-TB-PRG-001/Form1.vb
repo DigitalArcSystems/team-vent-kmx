@@ -12,8 +12,12 @@ Imports EposCmd.Net.DeviceCmdSet.Operation
 ''' <summary>
 ''' GUI form class for accepting user input
 ''' </summary>
+
 Public Class Form1
 
+#Region "Globals"
+
+    ' Globals
     Dim connector As DeviceManager
     Dim epos As Device
 
@@ -24,12 +28,16 @@ Public Class Form1
     Dim MessageNumber As Integer
 
     Private transType As String = String.Empty
-
+    
+#End Region
+    
 #Region "Form1"
+
 
     ''' <summary>
     ''' Load Form1 using base method
     ''' </summary>
+    
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Control.CheckForIllegalCrossThreadCalls = False
     End Sub
@@ -37,12 +45,14 @@ Public Class Form1
     ''' <summary>
     ''' Calls when this class (Form1) is closed
     ''' </summary>
+    
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
 
         If Not connector Is Nothing Then
             connector.Dispose()
         End If
     End Sub
+
 #End Region
 
 #Region "Menu Items"
@@ -57,6 +67,7 @@ Public Class Form1
     '''  <item><description> </description></item>
     '''  </list>
     ''' </remarks>
+    
     Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
         Try
 
@@ -149,6 +160,7 @@ Public Class Form1
     ''' <summary>
     ''' "Disconnect" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
+    
     Private Sub DisconnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DisconnectToolStripMenuItem.Click
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -200,6 +212,7 @@ Public Class Form1
     ''' <summary>
     ''' "Remote Control" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
+    
     Private Sub RemoteModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoteModeToolStripMenuItem.Click
 
         'Disable buttons
@@ -215,6 +228,7 @@ Public Class Form1
     ''' <summary>
     ''' "Local Control" Button (in Ribbon/strip-menu along top of UI)
     ''' </summary>
+    
     Private Sub LocalModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LocalModeToolStripMenuItem.Click
 
         Timer1.Enabled = False
@@ -240,6 +254,7 @@ Public Class Form1
 #End Region
 
 #Region "File Functions"
+    
     ''' <summary>
     '''     Adds a line to local Log file, with:
     ''' 
@@ -256,6 +271,7 @@ Public Class Form1
     '''     <item>  Mode of Operation (string)      </item>
     ''' </list>
     ''' </summary>
+    
     Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
         ' Write line to file
         Try
@@ -280,6 +296,7 @@ Public Class Form1
     '''     <item>  Load (min of 0??)     </item>
     ''' </list>
     ''' </summary>
+    
     Public Sub SendSerialData()
         ' Send data to serial port
 
@@ -311,10 +328,16 @@ Public Class Form1
     '''<remarks>
     ''' ( Good to have saved in case of loss of power or state errors )
     '''</remarks>
+    
     Private Sub CreateFile()
 
+        ' Dim DirectoryName as String = DataPath  & "\" & "Data_"
+
+        ' Make sure file location exists file
+        ' My.Computer.FileSystem.CreateDirectory(DirectoryName)
+
         'Make filename with date/time stamp
-        RecordDataFile = DataPath & "\" & "Data_" & Now.ToString("MM_dd_yy_hhmmss") & ".csv"
+        RecordDataFile = Now.ToString("MM_dd_yy_hhmmss") & ".csv" ' DirectoryName &
 
 
         If WriteToFile = 1 Then
@@ -336,7 +359,7 @@ Public Class Form1
             file.WriteLine("EncoderCountMax = " & EncoderCountMax)                      ' 275000 cts                        (was written as mA?)
             file.WriteLine("EncoderCountMin = " & EncoderCountMin)                      ' -150000 cts
             file.WriteLine("MotorCurrentMax = " & MotorCurrentMax)                      ' 700  mA
-            file.WriteLine("StartHeightEncoder = " & StartHeightEncoder)                ' 50000 cts
+            file.WriteLine("StartHeightEncoder = " & StartHeightEncoder)                ' -50000 cts
             file.WriteLine("      ")
             file.WriteLine("     FormulaCurrentPerLoadVsEncoderCounts  ")               ' Target Current per Load      <--      Encoder Counts
             file.WriteLine("MotorCurrentTarget_a = " & MotorCurrentTarget_a)            ' MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
@@ -345,7 +368,7 @@ Public Class Form1
             file.WriteLine("MotorCurrentTarget_b3 = " & MotorCurrentTarget_b3)
             'file.WriteLine("MotorCurrentTarget_b4 = " & MotorCurrentTarget_b4)
             file.WriteLine("MotorCurrentTarget_K = " & NUDMCTK.Value)
-            file.WriteLine("      ")                                                    
+            file.WriteLine("      ")
             file.WriteLine("     FormulaLoadPerCurrentVsEncoderCounts  ")               ' Load      <--      Current
             file.WriteLine("LoadAtCurrent_a = " & LoadAtCurrent_a)                      ' LoadAtCurrent = MeasuredCurrent * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
             file.WriteLine("LoadAtCurrent_b1 = " & LoadAtCurrent_b1)
@@ -353,7 +376,7 @@ Public Class Form1
             file.WriteLine("LoadAtCurrent_b3 = " & LoadAtCurrent_b3)
             '   file.WriteLine("LoadAtCurrent_b4 = " & LoadAtCurrent_b4)
             file.WriteLine("LoadAtCurrent_K = " & NUDLACK.Value)
-            file.WriteLine("      ")                                                    
+            file.WriteLine("      ")
             file.WriteLine("     FormulaHeightVsEncoder  ")                             ' Height    <--     Encoder
             file.WriteLine("PlateHeight_a = " & PlateHeight_a)                          ' PlateHeight = b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a_shift
             file.WriteLine("PlateHeight_b1 = " & PlateHeight_b1)                        '       a_shift = PlateHeight_intercept - ((SetLoad - PlateHeight_base) x PlateHeight_shift)
@@ -364,7 +387,7 @@ Public Class Form1
             file.WriteLine("PlateHeight_base = " & PlateHeight_base)
             file.WriteLine("PlateHeight_shift = " & PlateHeight_shift)
             file.WriteLine("PlateHeight_K = " & NUDPHK.Value)
-            file.WriteLine("      ")                                                    
+            file.WriteLine("      ")
             file.WriteLine("     FormulaEncoderVsHeight  ")                             ' Encoder   <---    Height
             file.WriteLine("EncoderCountsAbsolute_a = " & EncoderCountsAbsolute_a)      ' EncoderCountsAbsolute = b3(Height^3) + b2(Height^2)+ b1(Height) + a_off
             file.WriteLine("EncoderCountsAbsolute_b1 = " & EncoderCountsAbsolute_b1)    '       a_off = intercept + ((SetLoad - BaseLoad) x Shift)) 
@@ -380,17 +403,17 @@ Public Class Form1
             file.WriteLine("ForceStepCoeff        = " & ForceStepCoeff)                 ' 180 cts/N             Value for STAY down&up move. Modes Seek
             file.WriteLine("LoadTarget            = " & LoadTarget)                     ' 180 N (was 44.48 N)   defines a starting target load when the program is initiated
             file.WriteLine("LoadTolerance         = " & LoadTolerance)                  ' 3 N (was 10 N)        Value is multiplied by the look up equation to define what the motor current tolerance band should be ("User-set"??) 
-            file.WriteLine("LoadApproachForce     = " & LoadApproachForce)              ' 80 % of N             [Force Mode]     plates continue only upwards in increments of ForceUpStep   until this % of Target load is reached
-            file.WriteLine("LoadApproachForceRamp = " & LoadApproachForceRamp)          ' 80 % of N             [Ramped Force M] plates continue only upwards in increments of ForceRampStep until this % of Target load is reached
+            file.WriteLine("LoadApproachForce     = " & LoadApproachForce)              ' 80 % of N             [HoldForce Mode]     plates continue only upwards in increments of ForceUpStep   until this % of Target load is reached
+            file.WriteLine("LoadApproachForceRamp = " & LoadApproachForceRamp)          ' 80 % of N             [Ramped HoldForce M] plates continue only upwards in increments of ForceRampStep until this % of Target load is reached
             file.WriteLine("SeekCyclePause    = " & SeekCyclePause)                     ' 1  ms
             file.WriteLine("ForceUpPause      = " & ForceUpPause)                       ' 1  ms
             file.WriteLine("ForceRampPause    = " & ForceRampPause)                     ' 20 ms
             file.WriteLine("DistancePause     = " & DistancePause)                      ' XX ms                 [ missing from example .ini ]
             file.WriteLine("DistanceRampPause = " & DistanceRampPause)                  ' 25 ms
             file.WriteLine("SeekUpStep        = " & SeekUpStep)                         ' 2000   cts            Move UP when Target Current < Tolerance.                                Modes:  Seek
-            file.WriteLine("ForceDownStepNet  = " & ForceDownStepNet)                   ' 4000   cts            Net DOWN move.                                                          Modes:  Force, Ramp-Force, Seek
+            file.WriteLine("ForceDownStepNet  = " & ForceDownStepNet)                   ' 4000   cts            Net DOWN move.                                                          Modes:  HoldForce, Ramp-HoldForce, Seek
             file.WriteLine("ForceUpStep       = " & ForceUpStep)                        ' 15000  cts
-            file.WriteLine("ForceRampStep     = " & ForceRampStep)                      ' 2000   cts            Move UP when Target Current < Tolerance. Tune the Pause for slowness.   Modes:  Ramp-Force
+            file.WriteLine("ForceRampStep     = " & ForceRampStep)                      ' 2000   cts            Move UP when Target Current < Tolerance. Tune the Pause for slowness.   Modes:  Ramp-HoldForce
             file.WriteLine("DistanceUpStep    = " & DistanceUpStep)                     ' 10000  cts
             file.WriteLine("DistanceRampStep  = " & DistanceRampStep)                   ' 10000  cts
             file.WriteLine("DistanceStayStep  = " & DistanceStayStep)                   ' 1000   cts (was 15000)
@@ -407,13 +430,14 @@ Public Class Form1
         End If
     End Sub
 
-
 #End Region
 
 #Region "GUI Functions"
+
     ''' <summary>
     ''' Enables/Disables all components of Manual Panel (left side) with supplied boolean
     ''' </summary>
+
     Private Sub ManualPanelState(Mystate As Boolean)
         PanSetHome.Enabled = Mystate
         PanManual.Enabled = Mystate
@@ -447,6 +471,7 @@ Public Class Form1
     ''' <summary>
     ''' Enables/Disables all components of Remote Panel (right side) with supplied boolean
     ''' </summary>
+
     Private Sub RemotePanelState(Mystate As Boolean)
         PanRemoteMode.Enabled = Mystate
         PanStatus.Enabled = Mystate
@@ -460,6 +485,7 @@ Public Class Form1
     ''' <summary>
     ''' Highlight UI element for current type of movement
     ''' </summary>
+
     Private Sub SetMode(MyMode As String)
         ' set color for mode from serial port
         LblRemoteF.BackColor = Color.Empty
@@ -468,11 +494,11 @@ Public Class Form1
         LblRemoteRD.BackColor = Color.Empty
 
         Select Case MyMode
-            Case "Force"
+            Case "HoldForce"
                 LblRemoteF.BackColor = Color.Orange
             Case "RampForce"
                 LblRemoteRF.BackColor = Color.Orange
-            Case "Distance"
+            Case "HoldDistance"
                 LblRemoteD.BackColor = Color.Orange
             Case "RampDistance"
                 LblRemoteRD.BackColor = Color.Orange
@@ -482,6 +508,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Private Sub UpdateRemoteCommands(MyCommand As String, MyParameter1 As String, MyParameter2 As String, MyParameter3 As String)
         LblRemoteCom.Text = MyCommand
         LblRemotePar1.Text = MyParameter1
@@ -490,6 +517,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Public Sub ShowMessageBox(ByVal text As String, ByVal errorCode As UInteger)
         Dim errorMsg As String
 
@@ -501,6 +529,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Public Property DisplayWindow() As RichTextBox
         Get
             Return _displayWindow
@@ -513,6 +542,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Private Sub DisplayData(ByVal type As MessageType, ByVal msg As String)
         RichTextBox1.Invoke(New EventHandler(AddressOf DoDisplay))
     End Sub
@@ -520,6 +550,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Private Sub DoDisplay(ByVal sender As Object, ByVal e As EventArgs)
         RichTextBox1.SelectedText = String.Empty
         RichTextBox1.AppendText(_msg)
@@ -529,6 +560,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Public Property Message() As String
         Get
             Return _msg
@@ -541,6 +573,7 @@ Public Class Form1
     ''' <summary>
     '''  
     ''' </summary>
+
     Public Property Type() As MessageType
         Get
             Return _type
@@ -553,9 +586,10 @@ Public Class Form1
 #End Region
 
 #Region "Formulas"
+
     ''' <summary>
     '''     Calculates required "Motor Current per Load" based on motor's present Encoder Count.
-    '''     (Motor Current required to apply a given Force changes based on plate's height.) 
+    '''     (Motor Current required to apply a given HoldForce changes based on plate's height.) 
     ''' </summary>
     ''' <param name="EncoderVal">
     '''     Encoder counts (cts) at present
@@ -566,6 +600,7 @@ Public Class Form1
     ''' <remarks>
     '''     MotorCurrentTarget = K * SetLoad * (b3(Counts^3) + b2(Counts^2)+ b1(Counts) + a)
     ''' </remarks>
+
     Public Function GetTargetCurrentperLoadmA(EncoderValue As Decimal) As Decimal
         'FormulaCurrentPerLoadVsEncoderCounts
         Dim myvalue As Decimal
@@ -580,6 +615,7 @@ Public Class Form1
     ''' <summary>
     '''     Calculates Plate Height from Encoder Count
     ''' </summary>
+
     Public Function GetPlateHeight(EncoderPosition As Decimal) As Decimal
         'FormulaHeightVsEncoder
 
@@ -593,8 +629,9 @@ Public Class Form1
     End Function
 
     ''' <summary>
-    '''     Calculates Encoder Count from Plate Height (distraction)
+    '''     Calculates Encoder Count (cts) from Plate Height (mm or 0.1 mm?) (distraction)
     ''' </summary>
+
     Public Function GetEncoderPosition(PlateHeight As Decimal) As Decimal
         'FormulaEncoderVsHeight
         Dim myvalue As Decimal
@@ -608,8 +645,9 @@ Public Class Form1
     End Function
 
     ''' <summary>
-    '''     Calculates Force of Load on plates using Motor Current and Encoder Counts
+    '''     Calculates HoldForce of Load on plates using Motor Current and Encoder Counts
     ''' </summary>
+
     Public Function CalculateLoadAtCurrent(EncoderCounts As Decimal, MyCurrent As Decimal) As Decimal
         'FormulaLoadPerCurrentVsEncoderCounts
         Dim myvalue As Decimal
@@ -622,9 +660,11 @@ Public Class Form1
 #End Region
 
 #Region "Commands For Maxon"
+
     ''' <summary>
     '''     Set Motor Controller to Current Mode, and control with given Current
     ''' </summary>
+
     Public Sub SetCurrent(ICurrent As Integer)
         'Set current
         If epos Is Nothing Then
@@ -653,6 +693,7 @@ Public Class Form1
     ''' <summary>
     '''  If OperationStatus is "Pause", wait in 1 second increments
     ''' </summary>
+
     Public Sub CheckForPause()
         'Pause
         Do While OperationStatus = "Pause"
@@ -664,6 +705,7 @@ Public Class Form1
     '''     Set Motor Controller to Profile Positiion Mode,
     '''     and set its parameters for velocity, acceleration, and deceleration
     '''</summary>
+
     Private Sub SetMoveParameter()
         'Set move parameters
         If epos Is Nothing Then
@@ -695,16 +737,17 @@ Public Class Form1
     ''' <remarks>
     ''' Combine with ABS, add bool param for absolute
     ''' </remarks>
+
     Private Sub MoveToPosition(EncoderNum As Integer)
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
             OperationStatus = "Stop"
             Exit Sub
         End If
-        
+
         Try
             Dim ppm As ProfilePositionMode
-            
+
             'Dim TargetCount As Long ' Unused
             'get current position and add new encoder value
             'TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
@@ -713,7 +756,7 @@ Public Class Form1
             ppm.ActivateProfilePositionMode()
             ppm.MoveToPosition(EncoderNum, 0, True)
 
-            epos.Operation.MotionInfo.WaitForTargetReached(10000)
+            epos.Operation.MotionInfo.WaitForTargetReached(10000) ' timeout = 10 seconds
         Catch eb As EposCmd.Net.DeviceException
             ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
         Catch eb As OverflowException
@@ -731,13 +774,14 @@ Public Class Form1
     ''' <remarks>
     ''' Combine into other, add bool param for absolute
     '''</remarks>
+
     Private Sub MoveToPositionABS(EncoderNum As Integer)
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
             OperationStatus = "Stop"
             Exit Sub
         End If
-        
+
         Try
             Dim ppm As ProfilePositionMode
             '  Dim CurrentECCount As Long
@@ -765,6 +809,7 @@ Public Class Form1
     '''     Stores in respective public vars, 
     '''     and Updates local gui
     ''' </summary>
+
     Private Sub GetCurrentData()        ' Rename GetMotorData()
         If epos Is Nothing Then
             ' object doesn't exist yet
@@ -782,7 +827,7 @@ Public Class Form1
                 ' Calculate height from encoder counts
                 CPlateHeight = GetPlateHeight(CurrentEncoder)
                 TSDistance.Text = FormatNumber(CPlateHeight, 2) & " mm"
-                
+
                 ' Calculate current from encoder counts
                 LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CurrentEncoder)
 
@@ -806,9 +851,9 @@ Public Class Form1
                 End If
 
                 Select Case OperationMode
-                    Case "Force"
+                    Case "HoldForce"
                         SerialWord = SerialWord + 16
-                    Case "Distance"
+                    Case "HoldDistance"
                         SerialWord = SerialWord + 32
                     Case "RampForce"
                         SerialWord = SerialWord + 64
@@ -833,6 +878,7 @@ Public Class Form1
     '''     Sets epos to Homing Mode,
     '''     Defines current position as Home
     ''' </summary>
+
     Private Sub BtnSetZero_Click(sender As Object, e As EventArgs) Handles BtnSetZero.Click
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -867,9 +913,11 @@ Public Class Form1
 #End Region
 
 #Region "Button Click"
+
     ''' <summary>
     '''     Start Button - Event handler (makes decision based on which mode's checkbox is selected)
     ''' </summary>
+
     Private Sub BtnStartOC_Click(sender As Object, e As EventArgs) Handles BtnStartOC.Click
         ToolStripStatusLabel4.Text = "Busy"
 
@@ -886,25 +934,25 @@ Public Class Form1
             LoadOperation()
         End If
 
-        'Force
+        'HoldForce
         If RBTNCFF.Checked Then
-            OperationMode = "Force"
-            Force()
+            OperationMode = "HoldForce"
+            HoldForce()
         End If
 
-        'Ramp Force
+        'Ramp HoldForce
         If RBTNCFRF.Checked Then
             OperationMode = "RampForce"
             RampForce(NUDTargetLoad.Value)
         End If
 
-        'Distance
+        'HoldDistance
         If RBTNCFD.Checked Then
-            OperationMode = "Distance"
-            Distance(NUDTargetDistance.Value)
+            OperationMode = "HoldDistance"
+            HoldDistance(NUDTargetDistance.Value)
         End If
 
-        'Ramp Distance
+        'Ramp HoldDistance
         If RBTNCFRD.Checked Then
             OperationMode = "RampDistance"
             RampDistance(NUDTargetDistance.Value)
@@ -918,6 +966,7 @@ Public Class Form1
     ''' <summary>
     '''     Pause Button - Event handler
     ''' </summary>
+
     Private Sub BtnPauseOc_Click(sender As Object, e As EventArgs) Handles BtnPauseOc.Click
         OperationStatus = "Pause"
         ToolStripStatusLabel4.Text = "Pause"
@@ -926,6 +975,7 @@ Public Class Form1
     ''' <summary>
     '''     Resume Button - Event handler
     ''' </summary>
+
     Private Sub BtnResumeOc_Click(sender As Object, e As EventArgs) Handles BtnResumeOc.Click
         OperationStatus = "Start"
         ToolStripStatusLabel4.Text = "Busy"
@@ -934,6 +984,7 @@ Public Class Form1
     ''' <summary>
     '''     Stop Button - Event handler
     ''' </summary>
+
     Private Sub BtnStopOc_Click(sender As Object, e As EventArgs) Handles BtnStopOc.Click
         'Stop Operation cycle
         OperationStatus = "Stop"
@@ -943,6 +994,7 @@ Public Class Form1
     ''' <summary>
     '''     Remote Stop Button - Event handler
     ''' </summary>
+
     Private Sub BtnRemoteStop_Click(sender As Object, e As EventArgs) Handles BtnRemoteStop.Click
         'Stop Operation cycle
         OperationStatus = "Stop"
@@ -952,6 +1004,7 @@ Public Class Form1
     ''' <summary>
     '''     Close Button - Event handler
     ''' </summary>
+
     Private Sub BtnClose_Click(sender As Object, e As EventArgs) Handles BtnClose.Click
         ToolStripStatusLabel4.Text = "Busy"
         CollapsePlates()
@@ -961,6 +1014,7 @@ Public Class Form1
     ''' <summary>
     '''     "Retract Plates" Button (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub BtnRetractOc_Click(sender As Object, e As EventArgs) Handles BtnRetractOc.Click
         ToolStripStatusLabel4.Text = "Busy"
         CollapsePlates()
@@ -970,6 +1024,7 @@ Public Class Form1
     ''' <summary>
     '''     "Stop" Button (Set Home) - Event handler 
     ''' </summary>
+
     Private Sub BtnAZC_Click(sender As Object, e As EventArgs) Handles BtnAZC.Click
         OperationStatus = "Stop"
         SetCurrent(0)
@@ -978,13 +1033,14 @@ Public Class Form1
         CloseSerialPort()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
-    
+
     ''' <summary>
     '''      "Power Off" Button (Control Functions) - Event handler
     ''' </summary>
     ''' <remarks>
     '''     actually Halt function
     ''' </remarks>
+
     Private Sub BtnStopPlatesOc_Click(sender As Object, e As EventArgs) Handles BtnStopPlatesOc.Click
         OperationStatus = "Stop"
         SetCurrent(0)
@@ -992,10 +1048,11 @@ Public Class Form1
         GetCurrentData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
-    
+
     ''' <summary>
     '''     "Apply Current" Button - Event handler
     ''' </summary>
+
     Private Sub BtnApplyCurrent_Click(sender As Object, e As EventArgs) Handles BtnApplyCurrent.Click
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -1033,6 +1090,7 @@ Public Class Form1
     ''' <summary>
     '''      "Manual Jog Up (Encoder cts)" Button - Event handler
     ''' </summary>
+
     Private Sub BtnMoveUP_Click(sender As Object, e As EventArgs) Handles BtnMoveUp.Click
         ToolStripStatusLabel4.Text = "Busy"
         MoveToPosition(NUDEncoderCounts.Value)
@@ -1044,6 +1102,7 @@ Public Class Form1
     ''' <summary>
     '''     "Manual Jog Down (Encoder cts)" Button - Event handler
     ''' </summary>
+
     Private Sub BtnMoveDown_Click(sender As Object, e As EventArgs) Handles BtnMoveDown.Click
         ToolStripStatusLabel4.Text = "Busy"
         MoveToPosition(-NUDEncoderCounts.Value)
@@ -1055,6 +1114,7 @@ Public Class Form1
     ''' <summary>
     '''     "Manual Jog Up (mm)" Button - Event handler
     ''' </summary>
+
     Private Sub BtnMoveUpmm_Click(sender As Object, e As EventArgs) Handles BtnMoveUpmm.Click
         Dim NewHeight As Decimal
         Dim TargetEncoderNum As Decimal
@@ -1075,10 +1135,12 @@ Public Class Form1
     ''' <summary>
     '''     "Manual Jog Down (mm)" Button - Event handler
     ''' </summary>
+
     Private Sub BtnMoveDownmm_Click(sender As Object, e As EventArgs) Handles BtnMoveDownmm.Click
         Dim NewHeight As Decimal
         Dim TargetEncoderNum As Decimal
         ToolStripStatusLabel4.Text = "Busy"
+
         NewHeight = CPlateHeight - NUDMM.Value
 
         TargetEncoderNum = GetEncoderPosition(NewHeight)
@@ -1092,8 +1154,9 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''     "Move to Distance" Button (mm) - Event handler
+    '''     "Move to HoldDistance" Button (mm) - Event handler
     ''' </summary>
+
     Private Sub BtnMtD_Click(sender As Object, e As EventArgs) Handles BtnMtD.Click
         Dim TargetEncoderNum As Decimal
         ToolStripStatusLabel4.Text = "Busy"
@@ -1111,6 +1174,7 @@ Public Class Form1
     ''' <remarks>
     '''     AKA: "Move to Encoder Zero"
     ''' </remarks>
+
     Private Sub BtnMtEZ_Click(sender As Object, e As EventArgs) Handles BtnMtEZ.Click
         ToolStripStatusLabel4.Text = "Busy"
         Wait(500)
@@ -1123,81 +1187,101 @@ Public Class Form1
 #End Region
 
 #Region "Arrow Buttons"
+
     ''' <summary>
     '''     "Target Load" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDTargetLoad_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetLoad.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetLoad.Increment = InputBox("Enter new step value", "Step Value", NUDTargetLoad.Increment)
         End If
     End Sub
+
     ''' <summary>
-    '''     "Target Distance" Field Up/Down Increment Buttons (Control Functions) - Event handler
+    '''     "Target HoldDistance" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDTargetDistance_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDTargetDistance.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDTargetDistance.Increment = InputBox("Enter new step value", "Step Value", NUDTargetDistance.Increment)
         End If
     End Sub
+
     ''' <summary>
-    '''     "Distance" Field Up/Down Increment Buttons (Manual Jog) - Event handler
+    '''     "HoldDistance" Field Up/Down Increment Buttons (Manual Jog) - Event handler
     ''' </summary>
+
     Private Sub NUDDistance_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDDistance.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDDistance.Increment = InputBox("Enter new step value", "Step Value", NUDDistance.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "Homing Current" Field Up/Down Increment Buttons (Set Home) - Event handler
     ''' </summary>
+
     Private Sub NUDHomingCurrent_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDHomingCurrent.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDHomingCurrent.Increment = InputBox("Enter new step value", "Step Value", NUDHomingCurrent.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "Millimeter" Field Up/Down Increment Buttons (Manual Jog) - Event handler
     ''' </summary>
+
     Private Sub NUDMM_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMM.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMM.Increment = InputBox("Enter new step value", "Step Value", NUDMM.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "MotorCurrentTarget_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDMCTK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDMCTK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDMCTK.Increment = InputBox("Enter new step value", "Step Value", NUDMCTK.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "PlateHeight_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDPHK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDPHK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDPHK.Increment = InputBox("Enter new step value", "Step Value", NUDPHK.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "LoadAtCurrent_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDLACK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDLACK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDLACK.Increment = InputBox("Enter new step value", "Step Value", NUDLACK.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "EncoderCountsAbsolute_K" Field Up/Down Increment Buttons (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDECAK_MouseDown(sender As Object, e As MouseEventArgs) Handles NUDECAK.MouseDown
         If e.Button = MouseButtons.Right Then
             NUDECAK.Increment = InputBox("Enter new step value", "Step Value", NUDECAK.Increment)
         End If
     End Sub
+
     ''' <summary>
     '''     "Target Load" Field number change (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDTargetLoad_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetLoad.ValueChanged
 
         LblTargetCurrent.Text = (Val(NUDTargetLoad.Text)) * GetTargetCurrentperLoadmA(CurrentEncoder)
@@ -1205,9 +1289,11 @@ Public Class Form1
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
         LblTargetLoadLB.Text = FormatNumber(NUDTargetLoad.Value * 0.2248, 2)
     End Sub
+
     ''' <summary>
-    '''     "Target Distance" Field number change (Control Functions) - Event handler
+    '''     "Target HoldDistance" Field number change (Control Functions) - Event handler
     ''' </summary>
+
     Private Sub NUDTargetDistance_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetDistance.ValueChanged
 
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
@@ -1216,9 +1302,11 @@ Public Class Form1
 #End Region
 
 #Region "Operations"
+
     ''' <summary>
-    '''  ONLY used for Seek() and Force Operations [ Force(), RampedForce(), LoadOperation() ]
+    '''  ONLY used for Seek() and HoldForce Operations [ HoldForce(), RampedForce(), LoadOperation() ]
     ''' </summary>
+
     Private Sub OperationCycle()
         Dim MyCurrentTarget As Decimal
 
@@ -1229,6 +1317,8 @@ Public Class Form1
 
         MotorEncoderTolerance = LoadTarget * ForceStepCoeff
 
+        ' Current is within Tolerance of Target:
+        ' Target - Tolerance < CCurrent < Target + Tolerance
         If MyCurrentTarget - MotorCurrentTolerance < CCurrent And CCurrent < MyCurrentTarget + MotorCurrentTolerance Then
 
             ' if current is within tolerance move down and up same amount For "Seek Cycle"
@@ -1258,8 +1348,9 @@ Public Class Form1
                     Exit Sub
                 End If
             End If
-        Else
-            'Current is not within tolerance
+
+        Else 'Current is not within tolerance
+
             If CCurrent < MyCurrentTarget Then
                 ' "Up" if current is less than target
 
@@ -1277,7 +1368,7 @@ Public Class Form1
                 LblMET.Text = SeekUpStep
                 LblDecision.Text = " Up"
 
-                ' Up move
+                ' Move UP
                 If OperationStatus = "Stop" Then Exit Sub
                 MoveToPosition(SeekUpStep)
                 Wait(MotorCurrentReadPause)
@@ -1285,8 +1376,9 @@ Public Class Form1
 
                 'Check load 
                 CheckMaxForce()
-            Else
-                ' "Down - Up"  Current is greater than target
+            Else ' CCurrent >= MyCurrentTarget
+                ' "Down - Up"  to lower Height
+
 
                 'Send Serial Data and write to file
                 If OperationMode = "RampForce" Or OperationMode = "RampDistance" Then
@@ -1296,19 +1388,19 @@ Public Class Form1
                     AddFileLine("Down_Up", "No", OperationMode)
                 End If
 
+
                 ' Set target
                 MoveDownEncoderStep = LoadTarget * ForceStepCoeff
 
                 'Update screen
-
                 LblDecision.Text = " Down Up "
 
-                ' Down move
+                ' Move DOWN
                 If OperationStatus = "Stop" Then Exit Sub
                 LblMET.Text = "-" & MoveDownEncoderStep
                 MoveToPosition(-MoveDownEncoderStep) ' change add ramp force
 
-                ' Up move
+                ' Move UP by lesser amount
                 If OperationStatus = "Stop" Then Exit Sub
                 LblMET.Text = (MoveDownEncoderStep - ForceDownStepNet)
                 MoveToPosition(MoveDownEncoderStep - ForceDownStepNet)
@@ -1324,6 +1416,7 @@ Public Class Form1
     ''' <summary>
     '''     Closes plates using ClosingCurrent(-150 mA)
     ''' </summary>
+
     Public Sub CollapsePlates()
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
@@ -1345,12 +1438,13 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''     [FACTORY MODE] "Load Hold" Operation
+    '''     [Bad Function / FACTORY MODE] "Load Hold" Operation
     ''' </summary>
     ''' <remarks>
-    '''     - exactly the same as Load(), but compares MyTargetForce to CCurrent (instantaneous Current) instead of LoadCurrentN (Load Force calc'd from Current)
+    '''     - exactly the same as Load(), but compares MyTargetForce to CCurrent (instantaneous Current) instead of LoadCurrentN (Load HoldForce calc'd from Current)
     '''     - not currently used by any modes, only internal use
     '''</remarks>
+
     Public Sub LoadOperation()
         Dim MyTargetForce As Decimal
 
@@ -1371,34 +1465,59 @@ Public Class Form1
         PanSetHome.Enabled = False
         PanManual.Enabled = False
 
-        ' Move by force to % of target load
-        MyTargetForce = NUDTargetLoad.Value * (LoadApproachForce / 100)
+        ' ------------------ TEST BED ----------------------------
 
+
+
+
+        '        ' Move by force to % of target load
+        '        MyTargetForce = NUDTargetLoad.Value * (LoadApproachForce / 100)
+        '
         'first move
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
         GetCurrentData()
 
         Do
-            'Send write to file
-            AddFileLine("Up", "No", OperationMode)
-
-            SendSerialData()
-
-            MoveToPosition(ForceUpStep)
-            Wait(MotorCurrentReadPause)
             GetCurrentData()
-            Wait(ForceUpPause)
-
-            'Check load 
-            CheckMaxForce()
-        Loop Until OperationStatus = "Stop" Or CCurrent > MyTargetForce
-
-        'loop until "Stop Cycle" button is click
-        Do
-            OperationCycle()
-            Wait(SeekCyclePause)
+            MoveToPosition(50000)
+            GetCurrentData()
+            MoveToPosition(50000)
+            GetCurrentData()
+            Wait(1000)
+            MoveToPosition(-50000)
+            GetCurrentData()
+            Wait(1000)
+            MoveToPosition(-50000)
+            GetCurrentData()
+            Wait(1000)
         Loop Until OperationStatus = "Stop"
+
+        '
+        '        Do
+        '            'Send write to file
+        '            AddFileLine("Up", "No", OperationMode)
+        '
+        '            SendSerialData()
+        '
+        '            MoveToPosition(ForceUpStep)
+        '            Wait(MotorCurrentReadPause)
+        '            GetCurrentData()
+        '            Wait(ForceUpPause)
+        '
+        '            'Check load 
+        '            CheckMaxForce()
+        '        Loop Until OperationStatus = "Stop" Or CCurrent > MyTargetForce
+        '
+        '        'loop until "Stop Cycle" button is click
+        '        Do
+        '            OperationCycle()
+        '            Wait(SeekCyclePause)
+        '        Loop Until OperationStatus = "Stop"
+
+
+
+        ' ------------------ / TEST BED ----------------------------
 
         If InRemoteMode = False Then
             'Enable buttons
@@ -1408,8 +1527,9 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''  Extra function to start Seek without entering full operational mode
     ''' </summary>
+    
     Public Sub Seek()
 
 
@@ -1438,9 +1558,10 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''  Seek Force
     ''' </summary>
-    Private Sub Force()
+    
+    Private Sub HoldForce()
         Dim MyTargetForce As Decimal
 
         OperationStatus = "Start"
@@ -1497,9 +1618,10 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''  
+    '''  Seek Distance
     ''' </summary>
-    Private Sub Distance(MyTargetDistance As Decimal)
+    
+    Private Sub HoldDistance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
 
         OperationStatus = "Start"
@@ -1539,7 +1661,7 @@ Public Class Form1
             AddFileLine("Stay", "Yes", OperationMode)
             SendSerialData()
 
-            newtarget = MyTargetDistance - GetPlateHeight(CEncoder)         ' Rename to WhereIsPlate and swap subtraction
+            newtarget = MyTargetDistance - GetPlateHeight(CEncoder)         ' Rename to RelationToTarget and swap subtraction
 
             If newtarget > DistanceTolerance Then           ' plate is BELOW target, must move UP
 
@@ -1577,6 +1699,7 @@ Public Class Form1
     ''' Increments position in steps until Load matches or exceeds target force
     ''' ( Parameter MyTargetForce is overwritten without being used )
     ''' </summary>
+
     Private Sub RampForce(MyTargetForce As Decimal)
     
 
@@ -1636,6 +1759,7 @@ Public Class Form1
     ''' <summary>
     ''' Increments position in steps until Position matches or exceeds target position
     ''' </summary>
+
     Private Sub RampDistance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
 
@@ -1722,6 +1846,7 @@ Public Class Form1
     '''     <item>      Temp Pause reading Motor current, either for current protection or avoid bad reading feedback. </item>
     ''' </list>
     ''' </remarks>
+    
     Private Sub CheckMaxForce()
         'Check load     
         If LoadCurrentN > LoadMax Then
@@ -1735,6 +1860,7 @@ Public Class Form1
     ''' <summary>
     '''     Moves to absolute encoder position 0 (As calibrated with Homing)
     ''' </summary>
+    
     Public Sub MoveToHomeZero()
         OperationStatus = "Start"
         MoveToPositionABS(0)
@@ -1745,11 +1871,12 @@ Public Class Form1
     End Sub
     
     ''' <summary>
-    '''     (Inteneded to) Moves to "Start Height" set in Manual Jon menu
+    '''     (Inteneded to) Move to "Start Height" set in Manual Jon menu
     ''' </summary>
     ''' <remarks>
     '''     (Not actually called by "Move To Start Height" button <c>BtnMtEZ_Click</c> )
     ''' </remarks>
+    
     Public Sub MoveToStartHeight()
         OperationStatus = "Start"
         MoveToPositionABS(NUDSHeight.Value)
@@ -1759,10 +1886,10 @@ Public Class Form1
     End Sub
 
     ''' <summary>
-    '''     (Inteneded to) Move to "Distance" set in Manual Jog menu.
+    '''     (Inteneded to) Move to "HoldDistance" set in Manual Jog menu.
     ''' </summary>
     ''' <remarks>
-    '''     (Not actually called by "Move To Distance" button <c>BtnMtD_Click</c> )
+    '''     (Not actually called by "Move To HoldDistance" button <c>BtnMtD_Click</c> )
     ''' </remarks>
     Public Sub RemoteDistance()
 
@@ -1770,15 +1897,18 @@ Public Class Form1
         Wait(MotorCurrentReadPause)
         GetCurrentData()
     End Sub
+    
 #End Region
 
 #Region "Timers"
+    
     ''' <summary>
     '''     State machine:  4 Operation Modes 
     ''' </summary>
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
     ''' </remarks>
+    
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
 
         If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
@@ -1786,10 +1916,10 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Busy"
 
         Select Case OperationMode
-            Case "Force"
-                Force()
-            Case "Distance"
-                Distance(RemoteParameter / 10)
+            Case "HoldForce"
+                HoldForce()
+            Case "HoldDistance"
+                HoldDistance(RemoteParameter / 10)
             Case "RampForce"
                 RampForce(RemoteParameter)
             Case "RampDistance"
@@ -1806,6 +1936,7 @@ Public Class Form1
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
     ''' </remarks>
+    
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         If OperationStatus = "Start" Then Exit Sub
         ToolStripStatusLabel4.Text = "Busy"
@@ -1832,6 +1963,7 @@ Public Class Form1
 #End Region
 
 #Region "Serial"
+    
     ' enumeration to hold our message types
     Public Enum TransmissionType
         Text
@@ -2019,10 +2151,10 @@ Public Class Form1
                 MyCheckSumData = GetCheckSum(Mydata)
                 WriteData(">" & Mydata & MyCheckSumData & "<")
 
-            Case "010" '010 Mode Force
+            Case "010" '010 Mode HoldForce
 
                 Me.Invoke(Sub()
-                              OperationMode = "Force"
+                              OperationMode = "HoldForce"
 
                               ' get force
                               If _msg.Length > 7 Then
@@ -2032,10 +2164,10 @@ Public Class Form1
                                   RemoteForce = LoadTarget
                               End If
 
-                              LblRemoteCom.Text = "Force    (010)"
+                              LblRemoteCom.Text = "HoldForce    (010)"
                               LblRemotePar1.Text = Math.Round(Val(RemoteParameter)) & " N"
 
-                              SetMode("Force")
+                              SetMode("HoldForce")
                           End Sub)
 
                 Mydata = "010" & Val(RemoteParameter).ToString("0000")
@@ -2046,9 +2178,9 @@ Public Class Form1
             Case "012" '012 ModeDistance
 
                 Me.Invoke(Sub()
-                              OperationMode = "Distance"
+                              OperationMode = "HoldDistance"
 
-                              ' get Distance
+                              ' get HoldDistance
                               If _msg.Length > 7 Then
                                   RemoteParameter = _msg.Substring(4, _msg.Length - 7)
                               Else
@@ -2056,9 +2188,9 @@ Public Class Form1
                               End If
 
                               NUDTargetDistance.Value = Val(RemoteParameter / 10)
-                              LblRemoteCom.Text = "Distance     (012)"
+                              LblRemoteCom.Text = "HoldDistance     (012)"
                               LblRemotePar1.Text = "Target " & RemoteParameter / 10 & " mm"
-                              SetMode("Distance")
+                              SetMode("HoldDistance")
                           End Sub)
 
                 Mydata = "012" & Val(RemoteParameter).ToString("0000")
@@ -2078,7 +2210,7 @@ Public Class Form1
                                   RemoteParameter = LoadTarget
                               End If
 
-                              LblRemoteCom.Text = "Ramp Force   (020)"
+                              LblRemoteCom.Text = "Ramp HoldForce   (020)"
                               LblRemotePar1.Text = Math.Round(Val(RemoteParameter)) & " N"
 
                               SetMode("RampForce")
@@ -2102,8 +2234,8 @@ Public Class Form1
 
                               NUDTargetDistance.Value = Val(RemoteParameter / 10)
 
-                              LblRemoteCom.Text = "Ramp Distance    (022)"
-                              LblRemotePar1.Text = "Distance: " & RemoteParameter / 10 & " mm"
+                              LblRemoteCom.Text = "Ramp HoldDistance    (022)"
+                              LblRemotePar1.Text = "HoldDistance: " & RemoteParameter / 10 & " mm"
 
                               SetMode("RampDistance")
 
@@ -2245,6 +2377,7 @@ Public Class Form1
 #End Region
 
 #Region "MathFunctions"
+
     Private Function ByteToHex(ByVal comByte As Byte()) As String
         'create a new StringBuilder object
         Dim builder As New StringBuilder(comByte.Length * 3)
@@ -2281,7 +2414,6 @@ Public Class Form1
             Return Nothing
         End If
     End Function
-
     Private Function GetCheckSum(MyData As String) As String
         Dim Myvalue As String
         Dim byteArray() As Byte = System.Text.ASCIIEncoding.ASCII.GetBytes(MyData)
@@ -2301,6 +2433,7 @@ Public Class Form1
 #End Region
 
 #Region "Testing"
+
     '' test class for Timer1_Tick() 
     Public Sub test()
     '    If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
@@ -2308,10 +2441,10 @@ Public Class Form1
     '    ToolStripStatusLabel4.Text = "Busy"
 
     '    Select Case OperationMode
-    '        Case "Force"
-    '            Force()
-    '        Case "Distance"
-    '            Distance(RemoteParameter / 10)
+    '        Case "HoldForce"
+    '            HoldForce()
+    '        Case "HoldDistance"
+    '            HoldDistance(RemoteParameter / 10)
     '        Case "RampForce"
     '            RampForce(RemoteParameter)
     '        Case "RampDistance"
