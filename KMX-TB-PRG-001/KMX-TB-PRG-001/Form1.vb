@@ -111,7 +111,7 @@ Public Class Form1
 
             sm.SetEnableState()
 
-            GetCurrentData()
+            GetMotorData()
 
             ManualPanelState(True)
 
@@ -287,7 +287,7 @@ Public Class Form1
     ''' </summary>
 
     Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
-        GetCurrentData()
+        GetMotorData()
         ' Write line to file
         Try
             Dim file As System.IO.StreamWriter
@@ -372,7 +372,7 @@ Public Class Form1
             'Write current setting
             file.WriteLine(RecordDataFile)
             
-#If True Then 'This section can get in the way during testing
+#If False Then 'This section can get in the way during testing
             file.WriteLine(
                 "Motor Setting  " & " , " &                                  '   MOTOR SETTINGS
                 "MotorVelocity = " & MotorVelocity & " , " &        ' 7500 rpm
@@ -458,17 +458,19 @@ Public Class Form1
 #End If
 
             'Write to header to file
-            file.WriteLine("Time" & " , " &
-                           "Serial Stream" & " , " &
-                           "Encoder Count" & " , " &
-                           "Height (mm)" & " , " &
-                           "Load (N)" & " , " &
-                           "Actual Current (mA)" & " , " &
-                           "Target Current" & " , " &
-                           "mA Tolerance" & " , " &
-                           "Decision" & " , " &
-                           "Mode"
-                           )
+            file.WriteLine(
+                "Time" & " , " &
+               "Serial Stream" & " , " &
+               "Encoder Target" & " , " &
+               "Encoder Count" & " , " &
+               "Height (mm)" & " , " &
+               "Load (N)" & " , " &
+               "Actual Current (mA)" & " , " &
+               "Target Current" & " , " &
+               "mA Tolerance" & " , " &
+               "Decision" & " , " &
+               "Mode"
+               )
             file.Close()
         End If
     End Sub
@@ -665,7 +667,7 @@ Public Class Form1
         Dim myvalue As Decimal
         Dim a_off As Decimal
 
-        a_off = PlateHeight_intercept - ((CalculateLoadAtCurrent(CurrentEncoder, CCurrent) - PlateHeight_base) * PlateHeight_shift)
+        a_off = PlateHeight_intercept - ((CalculateLoadAtCurrent(CEncoder, CCurrent) - PlateHeight_base) * PlateHeight_shift)
         myvalue = NUDPHK.Value * (PlateHeight_b4 * (EncoderPosition) ^ 4 + PlateHeight_b3 * ((EncoderPosition) ^ 3) + PlateHeight_b2 * ((EncoderPosition) ^ 2) + PlateHeight_b1 * (EncoderPosition) + a_off)
 
         Return myvalue
@@ -796,7 +798,7 @@ Public Class Form1
 
             'epos.Operation.MotionInfo.WaitForTargetReached(10000) ' timeout = 10 seconds
             Do While Not reached
-                GetCurrentData()
+                GetMotorData()
                 epos.Operation.MotionInfo.GetMovementState(reached) ' timeout = 10 seconds
                 AddFileLine(reached, "", "MTPR")
             Loop
@@ -892,28 +894,28 @@ Public Class Form1
     '''     and Updates local gui
     ''' </summary>
 
-    Private Sub GetCurrentData()        ' Rename GetMotorData()
+    Private Sub GetMotorData()        ' Rename GetMotorData()
         If epos Is Nothing Then
             ' object doesn't exist yet
         Else
             Try
-                ' Get current encoder count from Maxon
-                CurrentEncoder = epos.Operation.MotionInfo.GetPositionIs()
+
                 ' Get Active electrical current (returns the current actual averaged value)
                 CCurrent = epos.Operation.MotionInfo.GetCurrentIsAveragedEx()
 
                 ' Get encoder count
-                CEncoder = CurrentEncoder               ' REDUNDANT (?)
-                TSEC.Text = CurrentEncoder
+                ' Get current encoder count from Maxon
+                CEncoder = epos.Operation.MotionInfo.GetPositionIs()
+                TSEC.Text = CEncoder
 
                 ' Calculate height from encoder counts
-                CPlateHeight = GetPlateHeight(CurrentEncoder)
+                CPlateHeight = GetPlateHeight(CEncoder)
                 TSDistance.Text = FormatNumber(CPlateHeight, 2) & " mm"
 
                 ' Calculate current from encoder counts
-                LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CurrentEncoder)
+                LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CEncoder)
 
-                LoadCurrentN = CalculateLoadAtCurrent(CurrentEncoder, CCurrent)                                         ' Load calculated from Current
+                LoadCurrentN = CalculateLoadAtCurrent(CEncoder, CCurrent)                                         ' Load calculated from Current
 
                 TSLoadN.Text = Math.Round(LoadCurrentN) & " N"
                 TSLoadLB.Text = FormatNumber(Math.Round(LoadCurrentN) * 0.2248, 2) & " lb"
@@ -975,7 +977,7 @@ Public Class Form1
 
                 ppm.DefinePosition(0)
 
-                GetCurrentData()
+                GetMotorData()
 
                 HomeStatus = 1
 
@@ -1111,7 +1113,7 @@ Public Class Form1
         OperationStatus = "Stop"
         SetCurrent(0)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         CloseSerialPort()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
@@ -1127,7 +1129,7 @@ Public Class Form1
         OperationStatus = "Stop"
         SetCurrent(0)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
@@ -1151,7 +1153,7 @@ Public Class Form1
 
                 Do
 
-                    GetCurrentData()
+                    GetMotorData()
                     Wait(250)
                 Loop Until OperationStatus = "Stop"
                 ToolStripStatusLabel4.Text = "Idle"
@@ -1177,7 +1179,7 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Busy"
         MoveToPosition(NUDEncoderCounts.Value)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
@@ -1189,7 +1191,7 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Busy"
         MoveToPosition(-NUDEncoderCounts.Value)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
@@ -1209,7 +1211,7 @@ Public Class Form1
         MoveToPositionABS(TargetEncoderNum)
 
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
 
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
@@ -1230,7 +1232,7 @@ Public Class Form1
         MoveToPositionABS(TargetEncoderNum)
 
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
 
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
@@ -1246,7 +1248,7 @@ Public Class Form1
         TargetEncoderNum = GetEncoderPosition(NUDDistance.Value)
         MoveToPositionABS(TargetEncoderNum)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
@@ -1262,7 +1264,7 @@ Public Class Form1
         Wait(500)
         MoveToPositionABS(NUDSHeight.Value)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
@@ -1366,7 +1368,7 @@ Public Class Form1
 
     Private Sub NUDTargetLoad_ValueChanged(sender As Object, e As EventArgs) Handles NUDTargetLoad.ValueChanged
 
-        LblTargetCurrent.Text = (Val(NUDTargetLoad.Text)) * GetTargetCurrentperLoadmA(CurrentEncoder)
+        LblTargetCurrent.Text = (Val(NUDTargetLoad.Text)) * GetTargetCurrentperLoadmA(CEncoder)
         LoadTarget = NUDTargetLoad.Value
         LblTargetEC.Text = Math.Round(GetEncoderPosition(NUDTargetDistance.Value))
         LblTargetLoadLB.Text = FormatNumber(NUDTargetLoad.Value * 0.2248, 2)
@@ -1393,9 +1395,9 @@ Public Class Form1
         Dim MyCurrentTarget As Decimal
 
         'MyCurrentTarget is mA after cal
-        MyCurrentTarget = NUDTargetLoad.Text * GetTargetCurrentperLoadmA(CurrentEncoder)
+        MyCurrentTarget = NUDTargetLoad.Text * GetTargetCurrentperLoadmA(CEncoder)
 
-        MotorCurrentTolerance = LoadTolerance * GetTargetCurrentperLoadmA(CurrentEncoder)
+        MotorCurrentTolerance = LoadTolerance * GetTargetCurrentperLoadmA(CEncoder)
 
         MotorEncoderTolerance = LoadTarget * ForceStepCoeff
 
@@ -1423,7 +1425,7 @@ Public Class Form1
                 LblMET.Text = MotorEncoderTolerance
                 MoveToPosition(MotorEncoderTolerance)
                 Wait(MotorCurrentReadPause)
-                GetCurrentData()
+                GetMotorData()
 
                 If RBTNCFLH.Checked Then
                     OperationStatus = "Stop"
@@ -1454,7 +1456,7 @@ Public Class Form1
                 If OperationStatus = "Stop" Then Exit Sub
                 MoveToPosition(SeekUpStep)
                 Wait(MotorCurrentReadPause)
-                GetCurrentData()
+                GetMotorData()
 
                 'Check load 
                 CheckMaxForce()
@@ -1487,7 +1489,7 @@ Public Class Form1
                 LblMET.Text = (MoveDownEncoderStep - ForceDownStepNet)
                 MoveToPosition(MoveDownEncoderStep - ForceDownStepNet)
                 Wait(MotorCurrentReadPause)
-                GetCurrentData()
+                GetMotorData()
 
                 'Check load 
                 CheckMaxForce()
@@ -1513,7 +1515,7 @@ Public Class Form1
             BtnAZC.Focus()
 
             Do
-                GetCurrentData()
+                GetMotorData()
                 Wait(400)
             Loop Until OperationStatus = "Stop"
         End If
@@ -1581,7 +1583,7 @@ Public Class Form1
         '
         '            MoveToPosition(ForceUpStep)
         '            Wait(MotorCurrentReadPause)
-        '            GetCurrentData()
+        '            GetMotorData()
         '            Wait(ForceUpPause)
         '
         '            'Check load 
@@ -1662,7 +1664,7 @@ Public Class Form1
         'first move
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
 
         Do
             'Write to file, but... do not send Serial Data?
@@ -1672,7 +1674,7 @@ Public Class Form1
 
             MoveToPosition(ForceUpStep)
             Wait(MotorCurrentReadPause)
-            GetCurrentData()
+            GetMotorData()
             Wait(ForceUpPause)
 
             'Check load 
@@ -1716,7 +1718,7 @@ Public Class Form1
         'first move
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
 
         Do
             'Write to file, but... do not send Serial Data?
@@ -1724,7 +1726,7 @@ Public Class Form1
 
             MoveToPosition(DistanceUpStep)
             Wait(MotorCurrentReadPause)
-            GetCurrentData()
+            GetMotorData()
             Wait(DistancePause)
 
             'Check load 
@@ -1756,7 +1758,7 @@ Public Class Form1
                 Wait(MotorCurrentReadPause)
             End If
 
-            GetCurrentData()
+            GetMotorData()
             Wait(DistancePause)
 
             '  Check Load 
@@ -1801,7 +1803,7 @@ Public Class Form1
         'first move
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
 
         Do
             'Send Serial Data and write to file
@@ -1811,7 +1813,7 @@ Public Class Form1
 
             MoveToPosition(ForceRampStep)
             Wait(MotorCurrentReadPause)
-            GetCurrentData()
+            GetMotorData()
             Wait(ForceRampPause)
 
             'Check load 
@@ -1855,7 +1857,7 @@ Public Class Form1
         'first move
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         
         Do
             'Send Serial Data and write to file
@@ -1864,7 +1866,7 @@ Public Class Form1
 
             MoveToPosition(DistanceRampStep)
             Wait(MotorCurrentReadPause)
-            GetCurrentData()
+            GetMotorData()
             Wait(DistanceRampPause)
 
             'Check load 
@@ -1896,7 +1898,7 @@ Public Class Form1
                 Wait(MotorCurrentReadPause)
             End If
 
-            GetCurrentData()
+            GetMotorData()
             Wait(DistanceRampPause)
 
             '  Check Load
@@ -1928,7 +1930,7 @@ Public Class Form1
             AddFileLine("Safety", "No", OperationMode)
             MoveToPosition(-LoadMaxSafetyDrop)
             Wait(MotorCurrentReadPause)
-            GetCurrentData()
+            GetMotorData()
         End If
     End Sub
     
@@ -1941,7 +1943,7 @@ Public Class Form1
         MoveToPositionABS(0)
 
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         OperationStatus = "Stop"
     End Sub
     
@@ -1956,7 +1958,7 @@ Public Class Form1
         OperationStatus = "Start"
         MoveToPositionABS(NUDSHeight.Value)
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
         OperationStatus = "Stop"
     End Sub
 
@@ -1970,7 +1972,7 @@ Public Class Form1
 
         MoveToPositionABS(GetEncoderPosition(NUDDistance.Value))
         Wait(MotorCurrentReadPause)
-        GetCurrentData()
+        GetMotorData()
     End Sub
     
 #End Region

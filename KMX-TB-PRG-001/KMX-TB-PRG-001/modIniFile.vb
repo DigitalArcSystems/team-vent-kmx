@@ -108,7 +108,7 @@ Module modIniFile
     Public CPlateHeight As Decimal
     Public CCurrent As Decimal                  ' Actual Current (Current Current)
     Public OperationStatus As String            
-    Public CurrentEncoder As Long               ' Encoder Count - SAME AS CEncoder
+   ' Public CurrentEncoder As Long               ' Encoder Count - SAME AS CEncoder
     Public Mytarget As Integer
     Public RunSeek As Boolean = False
     Public MyIntervalTL As Decimal = 1
