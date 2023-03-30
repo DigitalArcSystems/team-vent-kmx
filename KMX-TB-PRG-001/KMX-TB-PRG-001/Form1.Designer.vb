@@ -895,9 +895,8 @@ Partial Class Form1
         Me.RBTNCFRD.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBTNCFRD.Location = New System.Drawing.Point(369, 152)
         Me.RBTNCFRD.Name = "RBTNCFRD"
-        Me.RBTNCFRD.Size = New System.Drawing.Size(156, 22)
+        Me.RBTNCFRD.Size = New System.Drawing.Size(188, 22)
         Me.RBTNCFRD.TabIndex = 195
-        Me.RBTNCFRD.TabStop = True
         Me.RBTNCFRD.Text = "Ramped HoldDistance "
         Me.RBTNCFRD.UseVisualStyleBackColor = True
         '
@@ -907,9 +906,8 @@ Partial Class Form1
         Me.RBTNCFD.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBTNCFD.Location = New System.Drawing.Point(269, 153)
         Me.RBTNCFD.Name = "RBTNCFD"
-        Me.RBTNCFD.Size = New System.Drawing.Size(88, 22)
+        Me.RBTNCFD.Size = New System.Drawing.Size(156, 22)
         Me.RBTNCFD.TabIndex = 194
-        Me.RBTNCFD.TabStop = True
         Me.RBTNCFD.Text = "Hold HoldDistance"
         Me.RBTNCFD.UseVisualStyleBackColor = True
         '
@@ -919,9 +917,8 @@ Partial Class Form1
         Me.RBTNCFRF.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBTNCFRF.Location = New System.Drawing.Point(366, 125)
         Me.RBTNCFRF.Name = "RBTNCFRF"
-        Me.RBTNCFRF.Size = New System.Drawing.Size(131, 22)
+        Me.RBTNCFRF.Size = New System.Drawing.Size(163, 22)
         Me.RBTNCFRF.TabIndex = 193
-        Me.RBTNCFRF.TabStop = True
         Me.RBTNCFRF.Text = "Ramped HoldForce"
         Me.RBTNCFRF.UseVisualStyleBackColor = True
         '
@@ -931,15 +928,15 @@ Partial Class Form1
         Me.RBTNCFF.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBTNCFF.Location = New System.Drawing.Point(269, 126)
         Me.RBTNCFF.Name = "RBTNCFF"
-        Me.RBTNCFF.Size = New System.Drawing.Size(67, 22)
+        Me.RBTNCFF.Size = New System.Drawing.Size(99, 22)
         Me.RBTNCFF.TabIndex = 192
-        Me.RBTNCFF.TabStop = True
         Me.RBTNCFF.Text = "HoldForce"
         Me.RBTNCFF.UseVisualStyleBackColor = True
         '
         'RBTNCFLH
         '
         Me.RBTNCFLH.AutoSize = True
+        Me.RBTNCFLH.Checked = True
         Me.RBTNCFLH.Font = New System.Drawing.Font("Arial", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.RBTNCFLH.Location = New System.Drawing.Point(20, 148)
         Me.RBTNCFLH.Name = "RBTNCFLH"
@@ -957,7 +954,6 @@ Partial Class Form1
         Me.RBTNCFSC.Name = "RBTNCFSC"
         Me.RBTNCFSC.Size = New System.Drawing.Size(106, 22)
         Me.RBTNCFSC.TabIndex = 190
-        Me.RBTNCFSC.TabStop = True
         Me.RBTNCFSC.Text = "Seek Cycle"
         Me.RBTNCFSC.UseVisualStyleBackColor = True
         '
@@ -1106,7 +1102,7 @@ Partial Class Form1
         Me.Label5.ImageAlign = System.Drawing.ContentAlignment.TopRight
         Me.Label5.Location = New System.Drawing.Point(42, 161)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(74, 18)
+        Me.Label5.Size = New System.Drawing.Size(106, 18)
         Me.Label5.TabIndex = 182
         Me.Label5.Text = "HoldDistance:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
@@ -1575,7 +1571,7 @@ Partial Class Form1
             Or System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom), System.Windows.Forms.ToolStripStatusLabelBorderSides)
         Me.ToolStripStatusLabel9.Font = New System.Drawing.Font("Arial", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStripStatusLabel9.Name = "ToolStripStatusLabel9"
-        Me.ToolStripStatusLabel9.Size = New System.Drawing.Size(93, 35)
+        Me.ToolStripStatusLabel9.Size = New System.Drawing.Size(132, 35)
         Me.ToolStripStatusLabel9.Text = "HoldDistance:"
         '
         'TSDistance

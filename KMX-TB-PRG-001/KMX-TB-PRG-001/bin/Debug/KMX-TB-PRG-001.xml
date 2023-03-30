@@ -372,7 +372,7 @@ KMX-TB-PRG-001
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.OperationCycle">
  <summary>
-  ONLY used for Seek() and HoldForce Operations [ HoldForce(), RampedForce(), LoadOperation() ]
+  ONLY used for Seek() and HoldForce Operations [ HoldForce(), RampedForce() ]
  </summary>
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.CollapsePlates">
