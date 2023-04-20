@@ -4,3 +4,4 @@ Documents/General
 *.cache
 obj
 *.htm
+*.csv#
