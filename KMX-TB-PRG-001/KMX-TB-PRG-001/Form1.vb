@@ -206,6 +206,7 @@ Public Class Form1
                 NUDTargetLoad.Value = 0
                 TSAC.Text = 0
                 TSEC.Text = 0
+                TSECGoal.Text = 0
                 TSDistance.Text = 0
                 LblTargetCurrent.Text = 0
 
@@ -269,84 +270,6 @@ Public Class Form1
 
 #Region "File Functions"
 
-    ''' <summary>
-    '''     Adds a line to local Log file, with:
-    ''' 
-    ''' <list type="bullet">
-    '''     <item>  Timestamp                       </item>
-    '''     <item>  Plate Height (mm),              </item>
-    '''     <item>  Load (N),                       </item>
-    '''     <item>  Current (mA),                   </item>
-    '''     <item>  Encoder Counts (cts)            </item>
-    '''     <item>  target Current (mA),            </item>
-    '''     <item>  target Current Tolerance (mA),  </item>
-    '''     <item>  Movement Direction (string)     </item>
-    '''     <item>  sending to serial stream (bool) </item>
-    '''     <item>  Mode of Operation (string)      </item>
-    ''' </list>
-    ''' </summary>
-
-    Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
-        GetMotorData()
-        ' Write line to file
-        Try
-            Dim file As System.IO.StreamWriter
-            file = My.Computer.FileSystem.OpenTextFileWriter(RecordDataFile, True)
-            file.WriteLine(
-                Now.ToString("hh:mm:ss.fff") & " , " &                                      ' Timestamp
-                SerialStream & " , " &                                                           ' Serial Stream
-                CEncoder & " , " &                                                               ' Encoder Count
-                FormatNumber(GetPlateHeight(CEncoder), 2) & " , " &     ' Height (calc)
-                FormatNumber(LoadCurrentN, 1) & " , " &                         ' Load (calc)
-                CCurrent & " , " &                                                               ' Current
-                FormatNumber(LblTargetCurrent.Text, 1) & " , " &                ' Target Current
-                FormatNumber(MotorCurrentTolerance, 2) & " , " &                ' Currrent Tolerance
-                MyDecision & " , " &                                                             ' Decision
-                OperationMode                                                                    ' Mode
-                )
-            file.Close()
-
-        Catch ex As ArgumentException
-
-            MsgBox(ex.Message)
-        End Try
-    End Sub
-
-    ''' <summary>
-    '''     Sends info over serial:
-    ''' 
-    ''' <list type="bullet">
-    '''     <item>  Timestamp             </item>
-    '''     <item>  Serial Word (Flags)   </item>
-    '''     <item>  Plate Height          </item>
-    '''     <item>  Load (min of 0??)     </item>
-    ''' </list>
-    ''' </summary>
-
-    Public Sub SendSerialData()
-        ' Send data to serial port
-
-        Dim MyData As String
-        Dim MyCheckSumData As String
-        Dim SerialLoadMin As Decimal
-        Try
-
-            If InRemoteMode = True Then
-                If SerialLoad < 0 Then
-                    SerialLoadMin = 0
-                Else
-                    SerialLoadMin = SerialLoad
-                End If
-
-                MyData = "070" & Now.ToString("hh:mm:ss.fff") & " " & Val(SerialWord).ToString("000") & " " & SerialHeight.ToString("0000") & " " & SerialLoadMin.ToString("0000")
-                MyCheckSumData = GetCheckSum(MyData)
-                WriteData(">" & MyData & MyCheckSumData & "<")
-            End If
-        Catch ex As ArgumentException
-
-            MsgBox(ex.Message)
-        End Try
-    End Sub
 
     ''' <summary>
     ''' Save time-stamped file to memory with all current variables and constants.
@@ -370,9 +293,10 @@ Public Class Form1
             Dim file As System.IO.StreamWriter
             file = My.Computer.FileSystem.OpenTextFileWriter(RecordDataFile, True)
             'Write current setting
-            file.WriteLine(RecordDataFile)
-            
+
 #If False Then 'This section can get in the way during testing
+            file.WriteLine(RecordDataFile)
+
             file.WriteLine(
                 "Motor Setting  " & " , " &                                  '   MOTOR SETTINGS
                 "MotorVelocity = " & MotorVelocity & " , " &        ' 7500 rpm
@@ -466,13 +390,80 @@ Public Class Form1
                "Height (mm)" & " , " &
                "Load (N)" & " , " &
                "Actual Current (mA)" & " , " &
-               "Target Current" & " , " &
+               "Target Current" & " , " &       '(from Target Load)
                "mA Tolerance" & " , " &
                "Decision" & " , " &
                "Mode"
                )
             file.Close()
         End If
+    End Sub
+
+    ''' <summary>
+    '''     Adds a line to local Log file, 
+    ''' </summary>
+
+    Public Sub AddFileLine(MyDecision As String, Optional SerialStream As String = "", Optional OperationMode As String = "")
+        GetMotorData()
+        ' Write line to file
+        Try
+            Dim file As System.IO.StreamWriter
+            file = My.Computer.FileSystem.OpenTextFileWriter(RecordDataFile, True)
+            file.WriteLine(
+                Now.ToString("hh:mm:ss.fff") & " , " &                                      ' Timestamp
+                SerialStream & " , " &                                                           ' Serial Stream
+                EncoderTarget & " , " &                                                          ' Encoder Target
+                CEncoder & " , " &                                                               ' Encoder Count
+                FormatNumber(GetPlateHeight(CEncoder), 2) & " , " &     ' Height (calc)
+                FormatNumber(LoadCurrentN, 1) & " , " &                         ' Load (calc)
+                CCurrent & " , " &                                                               ' Current
+                FormatNumber(LblTargetCurrent.Text, 1) & " , " &                ' Target Current (from Target Load)
+                FormatNumber(MotorCurrentTolerance, 2) & " , " &                ' Current Tolerance
+                MyDecision & " , " &                                                             ' Decision
+                OperationMode                                                                    ' Mode
+                )
+            file.Close()
+
+        Catch ex As ArgumentException
+
+            MsgBox(ex.Message)
+        End Try
+    End Sub
+
+    ''' <summary>
+    '''     Sends info over serial:
+    ''' 
+    ''' <list type="bullet">
+    '''     <item>  Timestamp             </item>
+    '''     <item>  Serial Word (Flags)   </item>
+    '''     <item>  Plate Height          </item>
+    '''     <item>  Load (min of 0??)     </item>
+    ''' </list>
+    ''' </summary>
+
+    Public Sub SendSerialData()
+        ' Send data to serial port
+
+        Dim MyData As String
+        Dim MyCheckSumData As String
+        Dim SerialLoadMin As Decimal
+        Try
+
+            If InRemoteMode = True Then
+                If SerialLoad < 0 Then
+                    SerialLoadMin = 0
+                Else
+                    SerialLoadMin = SerialLoad
+                End If
+
+                MyData = "070" & Now.ToString("hh:mm:ss.fff") & " " & Val(SerialWord).ToString("000") & " " & SerialHeight.ToString("0000") & " " & SerialLoadMin.ToString("0000")
+                MyCheckSumData = GetCheckSum(MyData)
+                WriteData(">" & MyData & MyCheckSumData & "<")
+            End If
+        Catch ex As ArgumentException
+
+            MsgBox(ex.Message)
+        End Try
     End Sub
 
 #End Region
@@ -776,7 +767,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub MoveToPositionRevamp(EncoderNum As Integer, reached As Boolean)
+    Private Sub MoveToPositionQuick(EncoderNum As Integer, reached As Boolean)
         If epos Is Nothing Then
             MessageBox.Show("Please connect to the device")
             OperationStatus = "Stop"
@@ -785,25 +776,26 @@ Public Class Form1
 
         Try
             Dim ppm As ProfilePositionMode
+            ppm = epos.Operation.ProfilePositionMode
+            ppm.ActivateProfilePositionMode()
 
             'Dim TargetCount As Long ' Unused
             'get current position and add new encoder value
             'TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
-            ' ------------------ V MoveToPosition TEST BED V ----------------------------
-            ppm = epos.Operation.ProfilePositionMode
-            ppm.ActivateProfilePositionMode()
 
-            ppm.MoveToPosition(EncoderNum, 0, True)
+            ' ------------------ V MoveToPosition QUICK TEST BED V ----------------------------
 
 
-            'epos.Operation.MotionInfo.WaitForTargetReached(10000) ' timeout = 10 seconds
+            ppm.MoveToPosition(EncoderNum, 1, True)
+
             Do While Not reached
                 GetMotorData()
-                epos.Operation.MotionInfo.GetMovementState(reached) ' timeout = 10 seconds
-                AddFileLine(reached, "", "MTPR")
+                epos.Operation.MotionInfo.GetMovementState(reached)
+                AddFileLine(reached, "", "MTP Quick")
+                CheckMaxForce()
             Loop
 
-            ' ------------------ ^ MoveToPosition TEST BED ^ ----------------------------
+            ' ------------------ ^ MoveToPosition QUICK TEST BED ^ ----------------------------
         Catch eb As EposCmd.Net.DeviceException
             ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
         Catch eb As OverflowException
@@ -813,6 +805,42 @@ Public Class Form1
         Catch eb As Exception
             MessageBox.Show(eb.Message)
         End Try
+    End Sub
+
+    Private Sub MoveToPositionCareful(EncoderTarget As Integer, reached As Boolean)
+        ' ------------------ V MoveToPosition CAREFUL TEST BED V ----------------------------
+        GetMotorData()
+        If (CEncoder < EncoderTarget - MotorEncoderTolerance) Then            ' BELOW TOLERANCE, MOVE UP
+            Do
+                'Send Serial Data and write to file
+                AddFileLine(reached, "up", "MTP careful")
+
+                MoveToPosition(ForceRampStep)
+                Wait(MotorCurrentReadPause)
+                GetMotorData()
+                Wait(ForceRampPause)
+
+                'Check load 
+                CheckMaxForce()
+            Loop Until OperationStatus = "Stop" Or CEncoder > EncoderTarget - MotorEncoderTolerance
+        ElseIf (CEncoder > EncoderTarget + MotorEncoderTolerance) Then        ' ABOVE TOLERANCE, MOVE DOWN
+
+            Do
+                'Send Serial Data and write to file
+                AddFileLine(reached, "down", "MTP careful")
+
+                MoveToPosition(-ForceRampStep)
+                Wait(MotorCurrentReadPause)
+                GetMotorData()
+                Wait(ForceRampPause)
+
+                'Check load 
+                CheckMaxForce()
+            Loop Until OperationStatus = "Stop" Or CEncoder < EncoderTarget + MotorEncoderTolerance
+        End If                                                               ' WITHIN TOLERANCE, DO NOTHING
+
+        ' ------------------ ^ MoveToPosition CAREFUL TEST BED ^ ----------------------------
+        reached = True
     End Sub
 
     ''' <summary>
@@ -828,6 +856,7 @@ Public Class Form1
             OperationStatus = "Stop"
             Exit Sub
         End If
+'        AddFileLine("", EncoderNum.ToString(), "MTP")
 
         Try
             Dim ppm As ProfilePositionMode
@@ -840,7 +869,7 @@ Public Class Form1
             ppm.ActivateProfilePositionMode()
             ppm.MoveToPosition(EncoderNum, 0, True)
 
-            epos.Operation.MotionInfo.WaitForTargetReached(10000) ' timeout = 10 seconds
+            epos.Operation.MotionInfo.WaitForTargetReached(10000) ' timeout = 10 seconds (10,000 ms)
         Catch eb As EposCmd.Net.DeviceException
             ShowMessageBox(eb.ErrorMessage, eb.ErrorCode)
         Catch eb As OverflowException
@@ -894,7 +923,7 @@ Public Class Form1
     '''     and Updates local gui
     ''' </summary>
 
-    Private Sub GetMotorData()        ' Rename GetMotorData()
+    Private Sub GetMotorData()
         If epos Is Nothing Then
             ' object doesn't exist yet
         Else
@@ -903,14 +932,16 @@ Public Class Form1
                 ' Get Active electrical current (returns the current actual averaged value)
                 CCurrent = epos.Operation.MotionInfo.GetCurrentIsAveragedEx()
 
-                ' Get encoder count
-                ' Get current encoder count from Maxon
+                ' Get encoder count from Maxon
                 CEncoder = epos.Operation.MotionInfo.GetPositionIs()
+                System.Diagnostics.Debug.WriteLine(CEncoder.ToString())
                 TSEC.Text = CEncoder
+                TSECGoal.Text = EncoderTarget
 
                 ' Calculate height from encoder counts
                 CPlateHeight = GetPlateHeight(CEncoder)
                 TSDistance.Text = FormatNumber(CPlateHeight, 2) & " mm"
+                System.Diagnostics.Debug.WriteLine(CEncoder.ToString() + " written")
 
                 ' Calculate current from encoder counts
                 LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CEncoder)
@@ -1009,13 +1040,13 @@ Public Class Form1
         'Seek
         If RBTNCFSC.Checked Then
             OperationMode = "Seek"
-            Seek()
+            Seek_CarefulMove()
         End If
 
         'Load Hold
         If RBTNCFLH.Checked Then
             OperationMode = "LoadHold"
-            LoadOperation()
+            LoadOperation_QuickMove()
         End If
 
         'HoldForce
@@ -1388,7 +1419,7 @@ Public Class Form1
 #Region "Operations"
 
     ''' <summary>
-    '''  ONLY used for Seek() and HoldForce Operations [ HoldForce(), RampedForce() ]
+    '''  ONLY used for Seek and HoldForce Operations [ HoldForce(), RampedForce() ]
     ''' </summary>
 
     Private Sub OperationCycle()
@@ -1401,8 +1432,8 @@ Public Class Form1
 
         MotorEncoderTolerance = LoadTarget * ForceStepCoeff
 
-        ' Current is within Tolerance of Target:
-        ' Target - Tolerance < CCurrent < Target + Tolerance
+        ' Current is WITHIN Tolerance of Target:
+        ' Target - Tolerance   <   CCurrent   <   Target + Tolerance
         If MyCurrentTarget - MotorCurrentTolerance < CCurrent And CCurrent < MyCurrentTarget + MotorCurrentTolerance Then
 
             ' if current is within tolerance move down and up same amount For "Seek Cycle"
@@ -1433,10 +1464,10 @@ Public Class Form1
                 End If
             End If
 
-        Else 'Current is not within tolerance
+        Else 'Current is NOT WITHIN tolerance of Target
 
             If CCurrent < MyCurrentTarget Then
-                ' "Up" if current is less than target
+                ' "UP": current is LESS than target
 
                 'Send Serial Data and write to file
                 If OperationMode = "RampForce" Or OperationMode = "RampDistance" Then
@@ -1529,7 +1560,7 @@ Public Class Form1
     '''     - not currently used by any modes, only internal use
     '''</remarks>
 
-    Public Sub LoadOperation()
+    Public Sub LoadOperation_QuickMove()
         ' Dim MyTargetForce As Decimal
 
         OperationStatus = "Start"
@@ -1549,30 +1580,61 @@ Public Class Form1
         PanSetHome.Enabled = False
         PanManual.Enabled = False
 
-        ' ------------------ V LoadOperation TEST BED V ----------------------------
+        ' ------------------ V LoadOperation  QUICK MOVE V ----------------------------
         Dim reached As Boolean
 
-        AddFileLine(reached, "First Move", "LoadOperation")
-        MoveToPositionRevamp(-FirstMoveStep, reached)        'first move: 25000 cts
-        
         Wait(MotorCurrentReadPause) '50ms
-        
-        AddFileLine(reached, "Up", "LoadOperation")
-        MoveToPositionRevamp(50000, reached)
 
-        Wait(1000)
-        
-        AddFileLine(reached, "Down", "LoadOperation")
-        reached = False
-        MoveToPositionRevamp(-50000, reached)
-        AddFileLine(reached, "DONE", "LoadOperation")
-        
-        Wait(1000)
-        
+        AddFileLine(reached, "00000", "Quick")
+        MoveToPositionQuick(0, reached)
+        Wait(2000)
+
+        For i As Integer = 100000 To 200000 Step 10000
+            EncoderTarget = i + 50000
+            AddFileLine(reached, EncoderTarget, "Quick+")
+            MoveToPositionQuick(i, reached)
+
+            If OperationStatus = "Stop" Then Exit Sub
+            Wait(1000)
+            If OperationStatus = "Stop" Then Exit Sub
+
+            EncoderTarget = -i + 50000
+            AddFileLine(reached, EncoderTarget, "Quick-")
+            MoveToPositionQuick(EncoderTarget, reached)
+            If OperationStatus = "Stop" Then Exit Sub
+            Wait(1000)
+            If OperationStatus = "Stop" Then Exit Sub
+
+        Next
+
+        '        AddFileLine(reached, "-50000", "Quick")
+        '        MoveToPositionQuick(-50000, reached)
+        '        Wait(2000)
+
+        '        AddFileLine(reached, "50000", "Quick")
+        '        MoveToPositionQuick(50000, reached)
+        '        Wait(2000)
+        '
+        '        AddFileLine(reached, "100000", "Quick")
+        '        MoveToPositionQuick(100000, reached)
+        '        Wait(2000)
+
+
+        '        AddFileLine(reached, "150000", "Quick")
+        '        MoveToPositionQuick(150000, reached)
+        '        Wait(2000)
+        '
+        '
+        '        AddFileLine(reached, "-50000", "Quick")
+        '        MoveToPositionQuick(-50000, reached)
+        '        Wait(2000)
+
+
+        AddFileLine(reached, "DONE", "Quick")
         SetCurrent(0)           ' Stop motor buzzing
 
 
-        ' ------------------ ^ LoadOperation TEST BED ^ ----------------------------
+        ' ------------------ ^ LoadOperation QUICK MOVE ^ ----------------------------
 
         '
         '        Do
@@ -1603,11 +1665,15 @@ Public Class Form1
         End If
     End Sub
 
+
+
+
+
     ''' <summary>
     '''  Extra function to start Seek without entering full operational mode
     ''' </summary>
-    
-    Public Sub Seek()
+
+    Public Sub Seek_CarefulMove()
 
 
         OperationStatus = "Start"
@@ -1626,18 +1692,69 @@ Public Class Form1
         'Disable buttons
         PanSetHome.Enabled = False
         PanManual.Enabled = False
+        ' ------------------ V SEEK() CAREFUL MOVE V ----------------------------
 
-        'loop until "Stop Cycle" button is click
-        Do
-            OperationCycle()
-            Wait(SeekCyclePause)
-        Loop Until OperationStatus = "Stop"
+        Dim reached As Boolean
+
+        Wait(MotorCurrentReadPause) '50ms
+
+        AddFileLine(reached, "00000", "Careful")
+        MoveToPositionCareful(0, reached)
+        Wait(2000)
+
+        For i As Integer = 100000 To 200000 Step 10000
+            EncoderTarget = i + 50000
+            AddFileLine(reached, EncoderTarget, "Careful+")
+            MoveToPositionCareful(EncoderTarget, reached)
+
+            If OperationStatus = "Stop" Then Exit Sub
+            Wait(1000)
+            If OperationStatus = "Stop" Then Exit Sub
+
+            EncoderTarget = -i + 50000
+            AddFileLine(reached, EncoderTarget, "Careful-")
+            MoveToPositionCareful(EncoderTarget, reached)
+
+            If OperationStatus = "Stop" Then Exit Sub
+            Wait(1000)
+            If OperationStatus = "Stop" Then Exit Sub
+
+        Next
+
+        '        AddFileLine(reached, "-50000", "Careful")
+        '        MoveToPositionCareful(-50000, reached)
+        '        Wait(2000)
+        '
+        '
+        '        AddFileLine(reached, "150000", "Careful")
+        '        MoveToPositionCareful(150000, reached)
+        '        Wait(2000)
+        '
+        '        
+        '        AddFileLine(reached, "100000", "Careful")
+        '        MoveToPositionCareful(100000, reached)
+        '        Wait(2000)
+        '        
+        '        AddFileLine(reached, "50000", "Careful")
+        '        MoveToPositionCareful(50000, reached)
+        '        Wait(2000)
+        '        
+        '        
+        '        AddFileLine(reached, "-50000", "Careful")
+        '        MoveToPositionCareful(-50000, reached)
+        '        Wait(2000)
+
+
+        AddFileLine(reached, "DONE", "Careful")
+        SetCurrent(0)           ' Stop motor buzzing
+
+        ' ------------------ ^ SEEK() CAREFUL MOVE ^ ----------------------------
     End Sub
 
     ''' <summary>
     '''  Seek Force
     ''' </summary>
-    
+
     Private Sub HoldForce()
         Dim MyTargetForce As Decimal
 
@@ -1697,7 +1814,7 @@ Public Class Form1
     ''' <summary>
     '''  Seek Distance
     ''' </summary>
-    
+
     Private Sub HoldDistance(MyTargetDistance As Decimal)
         Dim newtarget As Decimal
 
@@ -1778,7 +1895,7 @@ Public Class Form1
     ''' </summary>
 
     Private Sub RampForce(MyTargetForce As Decimal)
-    
+
 
         OperationStatus = "Start"
 
@@ -1858,7 +1975,7 @@ Public Class Form1
         MoveToPosition(-FirstMoveStep)
         Wait(MotorCurrentReadPause)
         GetMotorData()
-        
+
         Do
             'Send Serial Data and write to file
             AddFileLine("Up", "Yes", OperationMode)
@@ -1923,7 +2040,7 @@ Public Class Form1
     '''     <item>      Temp Pause reading Motor current, either for current protection or avoid bad reading feedback. </item>
     ''' </list>
     ''' </remarks>
-    
+
     Private Sub CheckMaxForce()
         'Check load     
         If LoadCurrentN > LoadMax Then
@@ -1933,11 +2050,11 @@ Public Class Form1
             GetMotorData()
         End If
     End Sub
-    
+
     ''' <summary>
     '''     Moves to absolute encoder position 0 (As calibrated with Homing)
     ''' </summary>
-    
+
     Public Sub MoveToHomeZero()
         OperationStatus = "Start"
         MoveToPositionABS(0)
@@ -1946,14 +2063,14 @@ Public Class Form1
         GetMotorData()
         OperationStatus = "Stop"
     End Sub
-    
+
     ''' <summary>
     '''     (Inteneded to) Move to "Start Height" set in Manual Jon menu
     ''' </summary>
     ''' <remarks>
     '''     (Not actually called by "Move To Start Height" button <c>BtnMtEZ_Click</c> )
     ''' </remarks>
-    
+
     Public Sub MoveToStartHeight()
         OperationStatus = "Start"
         MoveToPositionABS(NUDSHeight.Value)
@@ -1974,18 +2091,18 @@ Public Class Form1
         Wait(MotorCurrentReadPause)
         GetMotorData()
     End Sub
-    
+
 #End Region
 
 #Region "Timers"
-    
+
     ''' <summary>
     '''     State machine:  4 Operation Modes 
     ''' </summary>
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
     ''' </remarks>
-    
+
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
 
         If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
@@ -2006,14 +2123,14 @@ Public Class Form1
         ToolStripStatusLabel4.Text = "Idle"
         Timer1.Enabled = False
     End Sub
-    
+
     ''' <summary>
     '''     State machine:  Collapse Plastes
     ''' </summary>
     ''' <remarks>
     '''     Updates UI with Busy/Idle state.
     ''' </remarks>
-    
+
     Private Sub Timer2_Tick(sender As Object, e As EventArgs) Handles Timer2.Tick
         If OperationStatus = "Start" Then Exit Sub
         ToolStripStatusLabel4.Text = "Busy"
@@ -2021,7 +2138,7 @@ Public Class Form1
         Timer2.Enabled = False
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
-    
+
     ''' <summary>
     '''     State machine:  Move Home
     ''' </summary>
@@ -2040,13 +2157,13 @@ Public Class Form1
 #End Region
 
 #Region "Serial"
-    
+
     ' enumeration to hold our message types
     Public Enum TransmissionType
         Text
         Hex
     End Enum
-    
+
     Public Enum MessageType
         Incoming
         Outgoing
@@ -2513,23 +2630,10 @@ Public Class Form1
 
     '' test class for Timer1_Tick() 
     Public Sub test()
-    '    If ToolStripStatusLabel4.Text = "Busy" Then Exit Sub
 
-    '    ToolStripStatusLabel4.Text = "Busy"
 
-    '    Select Case OperationMode
-    '        Case "HoldForce"
-    '            HoldForce()
-    '        Case "HoldDistance"
-    '            HoldDistance(RemoteParameter / 10)
-    '        Case "RampForce"
-    '            RampForce(RemoteParameter)
-    '        Case "RampDistance"
-    '            RampDistance(RemoteParameter / 10)
-    '    End Select
+        TSECGoal.Text = 0
 
-    '    ToolStripStatusLabel4.Text = "zzIdle"
-    '    Timer1.Enabled = False
     End Sub
 
     Private Sub RBTNCFLH_CheckedChanged(sender As Object, e As EventArgs) Handles RBTNCFLH.CheckedChanged

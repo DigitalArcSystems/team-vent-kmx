@@ -105,7 +105,9 @@ Module modIniFile
     Public ManRecordDataFile As String
     Public CVelocity As Integer
     Public CEncoder As Long                     ' Encoder Count (Current Encoder Count)
+    Public EncoderTarget As Long                ' NOT in ini file
     Public CPlateHeight As Decimal
+    Public PlateHeightTarget As Decimal         ' NOT in ini file
     Public CCurrent As Decimal                  ' Actual Current (Current Current)
     Public OperationStatus As String            
    ' Public CurrentEncoder As Long               ' Encoder Count - SAME AS CEncoder

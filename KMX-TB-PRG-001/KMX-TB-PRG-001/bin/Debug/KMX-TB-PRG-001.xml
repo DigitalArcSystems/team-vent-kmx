@@ -64,22 +64,17 @@ KMX-TB-PRG-001
  "Local Control" Button (in Ribbon/strip-menu along top of UI)
  </summary>
 </member>
+<member name="M:KMX_TB_PRG_001.Form1.CreateFile">
+ <summary>
+ Save time-stamped file to memory with all current variables and constants.
+ </summary>
+<remarks>
+ ( Good to have saved in case of loss of power or state errors )
+</remarks>
+</member>
 <member name="M:KMX_TB_PRG_001.Form1.AddFileLine(System.String,System.String,System.String)">
  <summary>
-     Adds a line to local Log file, with:
- 
- <list type="bullet">
-     <item>  Timestamp                       </item>
-     <item>  Plate Height (mm),              </item>
-     <item>  Load (N),                       </item>
-     <item>  Current (mA),                   </item>
-     <item>  Encoder Counts (cts)            </item>
-     <item>  target Current (mA),            </item>
-     <item>  target Current Tolerance (mA),  </item>
-     <item>  Movement Direction (string)     </item>
-     <item>  sending to serial stream (bool) </item>
-     <item>  Mode of Operation (string)      </item>
- </list>
+     Adds a line to local Log file, 
  </summary>
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.SendSerialData">
@@ -93,14 +88,6 @@ KMX-TB-PRG-001
      <item>  Load (min of 0??)     </item>
  </list>
  </summary>
-</member>
-<member name="M:KMX_TB_PRG_001.Form1.CreateFile">
- <summary>
- Save time-stamped file to memory with all current variables and constants.
- </summary>
-<remarks>
- ( Good to have saved in case of loss of power or state errors )
-</remarks>
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.ManualPanelState(System.Boolean)">
  <summary>
@@ -214,7 +201,7 @@ KMX-TB-PRG-001
  Combine into other, add bool param for absolute
 </remarks>
 </member>
-<member name="M:KMX_TB_PRG_001.Form1.GetCurrentData">
+<member name="M:KMX_TB_PRG_001.Form1.GetMotorData">
  <summary>
      Gets values for Encoder and Current, 
      Calculates Height and Load, 
@@ -372,7 +359,7 @@ KMX-TB-PRG-001
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.OperationCycle">
  <summary>
-  ONLY used for Seek() and HoldForce Operations [ HoldForce(), RampedForce() ]
+  ONLY used for Seek and HoldForce Operations [ HoldForce(), RampedForce() ]
  </summary>
 </member>
 <member name="M:KMX_TB_PRG_001.Form1.CollapsePlates">
@@ -380,7 +367,7 @@ KMX-TB-PRG-001
      Closes plates using ClosingCurrent(-150 mA)
  </summary>
 </member>
-<member name="M:KMX_TB_PRG_001.Form1.LoadOperation">
+<member name="M:KMX_TB_PRG_001.Form1.LoadOperation_QuickMove">
  <summary>
      [Bad Function / FACTORY MODE] "Load Hold" Operation
  </summary>
@@ -389,7 +376,7 @@ KMX-TB-PRG-001
      - not currently used by any modes, only internal use
 </remarks>
 </member>
-<member name="M:KMX_TB_PRG_001.Form1.Seek">
+<member name="M:KMX_TB_PRG_001.Form1.Seek_CarefulMove">
  <summary>
   Extra function to start Seek without entering full operational mode
  </summary>
