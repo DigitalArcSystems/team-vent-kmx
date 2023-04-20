@@ -4,4 +4,8 @@ Documents/General
 *.cache
 obj
 *.htm
+*.csv
 *.csv#
+KMX-TB-PRG-001\KMX-TB-PRG-001\bin\Debug\_DATA\*
+S:\team-vent-kmx\KMX-TB-PRG-001\KMX-TB-PRG-001\bin\Debug\_DATA\*.csv
+KMX-TB-PRG-001\KMX-TB-PRG-001\bin\Debug\_DATA\*.csv
