@@ -110,6 +110,7 @@ Module modIniFile
     Public PlateHeightTarget As Decimal         ' NOT in ini file
     Public CCurrent As Decimal                  ' Actual Current (Current Current)
     Public OperationStatus As String            
+    Public keyPressed As Boolean                 ' NOT in ini file
    ' Public CurrentEncoder As Long               ' Encoder Count - SAME AS CEncoder
     Public Mytarget As Integer
     Public RunSeek As Boolean = False

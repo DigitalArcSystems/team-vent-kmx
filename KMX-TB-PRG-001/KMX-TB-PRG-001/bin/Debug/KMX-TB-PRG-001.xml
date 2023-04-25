@@ -367,6 +367,12 @@ KMX-TB-PRG-001
      Closes plates using ClosingCurrent(-150 mA)
  </summary>
 </member>
+<member name="M:KMX_TB_PRG_001.Form1.CollapsePlatesRedo">
+ <summary>
+     Closes plates using ClosingCurrent(-150 mA)
+     But does not loop the command
+ </summary>
+</member>
 <member name="M:KMX_TB_PRG_001.Form1.LoadOperation_QuickMove">
  <summary>
      [Bad Function / FACTORY MODE] "Load Hold" Operation

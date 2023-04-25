@@ -41,12 +41,15 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Control.CheckForIllegalCrossThreadCalls = False
         QuickConnect()
+
+        ' Set KeyPreview property of the form to true so that the form can receive key events.
+        Me.KeyPreview = True
     End Sub
-    
+
     ''' <summary>
     ''' Calls when this class (Form1) is closed
     ''' </summary>
-    
+
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
 
         If Not connector Is Nothing Then
@@ -783,7 +786,7 @@ Public Class Form1
             'get current position and add new encoder value
             'TargetCount = epos.Operation.MotionInfo.GetPositionIs() + EncoderNum ' Unused
 
-            ' ------------------ V MoveToPosition QUICK TEST BED V ----------------------------
+            '  V MoveToPosition QUICK TEST BED V ----------------------------
 
 
             ppm.MoveToPosition(EncoderNum, 1, True)
@@ -808,7 +811,7 @@ Public Class Form1
     End Sub
 
     Private Sub MoveToPositionCareful(EncoderTarget As Integer, reached As Boolean)
-        ' ------------------ V MoveToPosition CAREFUL TEST BED V ----------------------------
+        '  V MoveToPosition CAREFUL TEST BED V ----------------------------
         GetMotorData()
         If (CEncoder < EncoderTarget - MotorEncoderTolerance) Then            ' BELOW TOLERANCE, MOVE UP
             Do
@@ -856,7 +859,7 @@ Public Class Form1
             OperationStatus = "Stop"
             Exit Sub
         End If
-'        AddFileLine("", EncoderNum.ToString(), "MTP")
+        '        AddFileLine("", EncoderNum.ToString(), "MTP")
 
         Try
             Dim ppm As ProfilePositionMode
@@ -934,14 +937,15 @@ Public Class Form1
 
                 ' Get encoder count from Maxon
                 CEncoder = epos.Operation.MotionInfo.GetPositionIs()
-                System.Diagnostics.Debug.WriteLine(CEncoder.ToString())
+                '                System.Diagnostics.Debug.WriteLine(CEncoder.ToString() + "          SDD WL")
                 TSEC.Text = CEncoder
                 TSECGoal.Text = EncoderTarget
 
                 ' Calculate height from encoder counts
                 CPlateHeight = GetPlateHeight(CEncoder)
                 TSDistance.Text = FormatNumber(CPlateHeight, 2) & " mm"
-                System.Diagnostics.Debug.WriteLine(CEncoder.ToString() + " written")
+                System.Diagnostics.Debug.WriteLine("encoder: " + CEncoder.ToString())
+                '                Console.WriteLine(CEncoder.ToString() + "       written       C WL")
 
                 ' Calculate current from encoder counts
                 LblTargetCurrent.Text = NUDTargetLoad.Value * GetTargetCurrentperLoadmA(CEncoder)
@@ -1145,7 +1149,7 @@ Public Class Form1
         SetCurrent(0)
         Wait(MotorCurrentReadPause)
         GetMotorData()
-        CloseSerialPort()
+        CloseSerialPort() ' Remote side serial port
         ToolStripStatusLabel4.Text = "Idle"
     End Sub
 
@@ -1553,6 +1557,51 @@ Public Class Form1
     End Sub
 
     ''' <summary>
+    '''     Closes plates using ClosingCurrent(-150 mA)
+    '''     But does not loop the command
+    ''' </summary>
+
+    Public Sub CollapsePlatesRedo()
+        If epos Is Nothing Then
+            MessageBox.Show("Please connect to the device")
+            Exit Sub
+        End If
+
+
+        OperationStatus = "Start"
+
+        SetCurrent(ClosingCurrent)
+        If OperationStatus = "Stop" Then Exit Sub
+
+
+        'Set focus to Pause button
+        BtnPauseOc.Focus()
+
+        Debug.WriteLine("GetVelocityIsAveraged1: " + epos.Operation.MotionInfo.GetVelocityIsAveraged().ToString())
+
+        Wait(MotorCurrentReadPause)
+        Debug.WriteLine("GetVelocityIsAveraged2: " + epos.Operation.MotionInfo.GetVelocityIsAveraged().ToString())
+
+        Do While epos.Operation.MotionInfo.GetVelocityIsAveraged() < -5 ' timeout = 10 seconds (10,000 ms)
+            GetMotorData()
+            AddFileLine("collapse",
+                        "avg velocity: " + epos.Operation.MotionInfo.GetVelocityIsAveraged().ToString(),
+                        "collapse plates")
+
+            CheckForPause()
+        Loop
+        Debug.WriteLine("GetVelocityIsAveraged3: " + epos.Operation.MotionInfo.GetVelocityIsAveraged().ToString())
+
+    End Sub
+
+    Private Sub Form1_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        ' Check if any key is pressed.
+        If e.KeyCode <> Keys.None Then
+            keyPressed = True
+        End If
+    End Sub
+
+    ''' <summary>
     '''     [Bad Function / FACTORY MODE] "Load Hold" Operation
     ''' </summary>
     ''' <remarks>
@@ -1580,40 +1629,61 @@ Public Class Form1
         PanSetHome.Enabled = False
         PanManual.Enabled = False
 
-        ' ------------------ V LoadOperation  QUICK MOVE V ----------------------------
+        '  V LoadOperation  QUICK MOVE V ----------------------------
         Dim reached As Boolean
-
+        Dim opModeStr As String
+        opModeStr = "Quick"
         Wait(MotorCurrentReadPause) '50ms
 
-        AddFileLine(reached, "00000", "Quick")
-        MoveToPositionQuick(0, reached)
-        Wait(2000)
+        '        AddFileLine(reached, "00000", opModeStr)
+        '        MoveToPositionQuick(0, reached)
+        '        Wait(2000)
 
-        For i As Integer = 100000 To 200000 Step 10000
-            EncoderTarget = i + 50000
-            AddFileLine(reached, EncoderTarget, "Quick+")
-            MoveToPositionQuick(i, reached)
+        For i As Integer = 0 To 20 Step 1
+
+            ' COLLAPSE
+            AddFileLine(reached, "collapse", opModeStr)
+            MoveToPositionQuick(0, reached)
 
             If OperationStatus = "Stop" Then Exit Sub
-            Wait(1000)
+
+            ' TARGET
+            AddFileLine(reached, "210000", opModeStr)
+            MoveToPositionQuick(210000, reached)
+
+            OperationStatus = "Pause"
+            BtnResumeOc.Focus()             ' Set focus to Pause button
+            CheckForPause()
             If OperationStatus = "Stop" Then Exit Sub
 
-            EncoderTarget = -i + 50000
-            AddFileLine(reached, EncoderTarget, "Quick-")
-            MoveToPositionQuick(EncoderTarget, reached)
-            If OperationStatus = "Stop" Then Exit Sub
-            Wait(1000)
-            If OperationStatus = "Stop" Then Exit Sub
+            '            CheckForPause()
 
+            '            Do While Not keyPressed
+            '                If OperationStatus = "Stop" Then Exit Sub
+            '                Wait(1000)
+            '            Loop
+            '            keyPressed = False
         Next
+        ' ------------------ ^ LoadOperation QUICK MOVE ^ ----------------------------
 
-        '        AddFileLine(reached, "-50000", "Quick")
-        '        MoveToPositionQuick(-50000, reached)
-        '        Wait(2000)
+        '        For i As Integer = 100000 To 200000 Step 10000
+        '            EncoderTarget = i + 50000
+        '            AddFileLine(reached, EncoderTarget, opModeStr)
+        '            MoveToPositionQuick(i, reached)
+        '
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '            Wait(1000)
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '
+        '            EncoderTarget = -i + 50000
+        '            AddFileLine(reached, EncoderTarget, opModeStr)
+        '            MoveToPositionQuick(EncoderTarget, reached)
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '            Wait(1000)
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '
+        '        Next
 
-        '        AddFileLine(reached, "50000", "Quick")
-        '        MoveToPositionQuick(50000, reached)
-        '        Wait(2000)
         '
         '        AddFileLine(reached, "100000", "Quick")
         '        MoveToPositionQuick(100000, reached)
@@ -1629,12 +1699,12 @@ Public Class Form1
         '        MoveToPositionQuick(-50000, reached)
         '        Wait(2000)
 
+        '        AddFileLine(reached, "DONE", opModeStr)
+        '        SetCurrent(0)           ' Stop motor buzzing
 
-        AddFileLine(reached, "DONE", "Quick")
-        SetCurrent(0)           ' Stop motor buzzing
 
 
-        ' ------------------ ^ LoadOperation QUICK MOVE ^ ----------------------------
+
 
         '
         '        Do
@@ -1692,34 +1762,61 @@ Public Class Form1
         'Disable buttons
         PanSetHome.Enabled = False
         PanManual.Enabled = False
-        ' ------------------ V SEEK() CAREFUL MOVE V ----------------------------
 
+        '  V SEEK() CAREFUL MOVE V ----------------------------
         Dim reached As Boolean
-
+        Dim opModeStr As String
+        opModeStr = "Careful"
         Wait(MotorCurrentReadPause) '50ms
 
-        AddFileLine(reached, "00000", "Careful")
-        MoveToPositionCareful(0, reached)
-        Wait(2000)
+        '        AddFileLine(reached, "00000", "Careful")
+        '        MoveToPositionCareful(0, reached)
+        '        Wait(2000)
 
-        For i As Integer = 100000 To 200000 Step 10000
-            EncoderTarget = i + 50000
-            AddFileLine(reached, EncoderTarget, "Careful+")
-            MoveToPositionCareful(EncoderTarget, reached)
+        For i As Integer = 0 To 20 Step 1
 
-            If OperationStatus = "Stop" Then Exit Sub
-            Wait(1000)
-            If OperationStatus = "Stop" Then Exit Sub
-
-            EncoderTarget = -i + 50000
-            AddFileLine(reached, EncoderTarget, "Careful-")
-            MoveToPositionCareful(EncoderTarget, reached)
+            ' COLLAPSE
+            AddFileLine(reached, "collapse", opModeStr)
+            MoveToPositionQuick(0, reached)
 
             If OperationStatus = "Stop" Then Exit Sub
-            Wait(1000)
+
+            ' TARGET
+            AddFileLine(reached, "210000", opModeStr)
+            MoveToPositionCareful(210000, reached)
+
+            OperationStatus = "Pause"
+            BtnResumeOc.Focus()             ' Set focus to Pause button
+            CheckForPause()
             If OperationStatus = "Stop" Then Exit Sub
 
+            '            CheckForPause()
+
+            '            Do While Not keyPressed
+            '                If OperationStatus = "Stop" Then Exit Sub
+            '                Wait(1000)
+            '            Loop
+            '            keyPressed = False
         Next
+        ' ------------------ ^ SEEK() CAREFUL MOVE ^ ----------------------------
+
+        '        For i As Integer = 100000 To 200000 Step 10000
+        '            EncoderTarget = i + 50000
+        '            AddFileLine(reached, EncoderTarget, "Careful+")
+        '            MoveToPositionCareful(EncoderTarget, reached)
+        '
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '            Wait(1000)
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '
+        '            EncoderTarget = -i + 50000
+        '            AddFileLine(reached, EncoderTarget, "Careful-")
+        '            MoveToPositionCareful(EncoderTarget, reached)
+        '
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '            Wait(1000)
+        '            If OperationStatus = "Stop" Then Exit Sub
+        '        Next
 
         '        AddFileLine(reached, "-50000", "Careful")
         '        MoveToPositionCareful(-50000, reached)
@@ -1745,10 +1842,9 @@ Public Class Form1
         '        Wait(2000)
 
 
-        AddFileLine(reached, "DONE", "Careful")
-        SetCurrent(0)           ' Stop motor buzzing
+        '        AddFileLine(reached, "DONE", opModeStr)
+        '        SetCurrent(0)           ' Stop motor buzzing
 
-        ' ------------------ ^ SEEK() CAREFUL MOVE ^ ----------------------------
     End Sub
 
     ''' <summary>
